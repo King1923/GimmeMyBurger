@@ -21,6 +21,9 @@ import MenuProduct from './pages/User_MenuProduct'; // MenuProduct is for displa
 import AddPromotion from './pages/Admin_AddPromotion';
 import EditPromotion from './pages/Admin_EditPromotion';
 import AdminPromotions from './pages/Admin_Promotions';
+import Inventory from './pages/Admin_Inventory';
+import EditInventory from './pages/Admin_EditInventory';
+import AddInventory from './pages/Admin_AddInventory';
 
 
 import Register from './pages/Register';
@@ -74,7 +77,9 @@ function App() {
               <Route path="/product/:productId" element={<MenuProduct />} /> {/* This route handles the product details page */}
               <Route path={"/order"} element={<Orders />} />
               <Route path={"/form"} element={<MyForm />} />
-              
+              <Route path="/inventory" element={<Inventory />} />
+              <Route path="/addinventory" element={<AddInventory />} />
+              <Route path="/editinventory/:id" element={<EditInventory />} />
               <Route path="/rewards" element={<Rewards />} />
               <Route path="/addreward" element={<AddReward />} />
               <Route path="/editreward/:id" element={<EditReward />} />

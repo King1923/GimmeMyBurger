@@ -7,7 +7,7 @@ import http from '../http';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import zxcvbn from 'zxcvbn';
-import ClientNavbar from '../client/ClientNavBar';
+import ClientNavbar from '../client/ClientNavbar';
 
 const passwordStrengthText = [
   'Very Weak',
