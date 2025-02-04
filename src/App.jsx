@@ -20,6 +20,8 @@ import Login from './pages/Login';
 import http from './http';
 import UserContext from './contexts/UserContext';
 import MenuProduct from './pages/User_MenuProduct'; // MenuProduct is for displaying product details
+import AddPromotion from './pages/Admin_AddPromotion';
+import EditPromotion from './pages/Admin_EditPromotion';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -50,7 +52,9 @@ function App() {
               <Route path={"/cart"} element={<UserCart />} />
               <Route path={"/products"} element={<Products />} />
               <Route path={"/addproduct"} element={<AddProduct />} />
+              <Route path={"/addpromotion"} element={<AddPromotion />} />
               <Route path="/editproduct/:id" element={<EditProduct />} />
+              <Route path="/editpromotion/:id" element={<EditPromotion />} />
               <Route path={"/categories"} element={<Categories />} />
               <Route path={"/addcategory"} element={<AddCategory />} />
               <Route path="/editcategory/:id" element={<EditCategory />} />
