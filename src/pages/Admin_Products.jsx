@@ -44,7 +44,7 @@ function AdminProducts() {
     }, []);
 
     const deleteProduct = async (id, name) => {
-        console.log('Deleting product with ID:', id);  // Log to check the ID
+        console.log('Deleting product with ID:', id);
         try {
             const accessToken = localStorage.getItem('accessToken');
             const response = await http.delete(`/product/${id}`, {
@@ -63,14 +63,10 @@ function AdminProducts() {
 
     const sortedProducts = productList.sort((a, b) => a.productId - b.productId);
 
-    if (!categories || categories.length === 0) {
-        return <Typography>Loading categories...</Typography>;
-    }
-
     return (
         <Box sx={{ display: 'flex' }}>
             <AdminSidebar />
-            <Box sx={{ flexGrow: 1, paddingLeft: '1px', paddingTop: '16px' }}>
+            <Box sx={{ flexGrow: 1, paddingLeft: '16px', paddingTop: '16px' }}>
                 <Typography variant="h5" sx={{ my: 2 }}>
                     Products
                 </Typography>
@@ -83,84 +79,90 @@ function AdminProducts() {
                     )}
                 </Box>
 
-                <Table sx={{ minWidth: 650 }}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Product ID</TableCell>
-                            <TableCell>Image</TableCell>
-                            <TableCell>SKU</TableCell>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Price</TableCell>
-                            <TableCell>Description</TableCell>
-                            <TableCell>Category</TableCell>
-                            <TableCell>Stock</TableCell>
-                            <TableCell>Created At</TableCell>
-                            <TableCell>Updated At</TableCell>
-                            <TableCell>Actions</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {sortedProducts.map((product) => {
-                            const imageUrl = product.image
-                                ? `${process.env.REACT_APP_BASE_URL || 'http://localhost:5000'}/${product.image}`
-                                : null;
+                {/* Show a message if no categories exist, but keep the sidebar */}
+                {categories.length === 0 ? (
+                    <Typography>No categories found. Please add categories first.</Typography>
+                ) : (
+                    <Table sx={{ minWidth: 650 }}>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Product ID</TableCell>
+                                <TableCell>Image</TableCell>
+                                <TableCell>SKU</TableCell>
+                                <TableCell>Name</TableCell>
+                                <TableCell>Price</TableCell>
+                                <TableCell>Description</TableCell>
+                                <TableCell>Category</TableCell>
+                                <TableCell>Stock</TableCell>
+                                <TableCell>Created At</TableCell>
+                                <TableCell>Updated At</TableCell>
+                                <TableCell>Actions</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {sortedProducts.map((product) => {
+                                const imageUrl = product.image
+                                    ? `${process.env.REACT_APP_BASE_URL || 'http://localhost:5000'}/${product.image}`
+                                    : null;
 
-                            return (
-                                <TableRow key={product.id}>
-                                    <TableCell>{product.productId || 'N/A'}</TableCell>
-                                    <TableCell>
-                                        {product.imageFile ? (
-                                            <img
-                                                src={`${import.meta.env.VITE_FILE_BASE_URL}${product.imageFile}`}
-                                                alt={product.name}
-                                                style={{ width: 50, height: 50, objectFit: 'cover' }}
-                                            />
-                                        ) : (
-                                            "No Image"
-                                        )}
-                                    </TableCell>
-                                    <TableCell>{product.sku || 'N/A'}</TableCell>
-                                    <TableCell>{product.name || 'N/A'}</TableCell>
-                                    <TableCell>{product.price || 'N/A'}</TableCell>
-                                    <TableCell>{product.description || 'N/A'}</TableCell>
-                                    <TableCell>
-    {product.categoryId
-        ? categories.find((cat) => cat.categoryId === product.categoryId)?.categoryName || 'Uncategorized'
-        : 'Uncategorized'}
-</TableCell>
-                                    <TableCell>
-                                        {product.stock > 0 ? product.stock : 'Out of Stock'}
-                                    </TableCell>
-                                    <TableCell>
-                                        {product.createdAt
-                                            ? dayjs(product.createdAt).format('YYYY-MM-DD HH:mm:ss')
-                                            : 'N/A'}
-                                    </TableCell>
-                                    <TableCell>
-                                        {product.updatedAt
-                                            ? dayjs(product.updatedAt).format('YYYY-MM-DD HH:mm:ss')
-                                            : 'N/A'}
-                                    </TableCell>
-                                    <TableCell>
-                                        <IconButton
-                                            component={Link}
-                                            to={`/editproduct/${product.productId}`}
-                                            color="primary"
-                                        >
-                                            <Edit />
-                                        </IconButton>
-                                        <IconButton
-                                            onClick={() => deleteProduct(product.productId, product.name)}
-                                            color="error"
-                                        >
-                                            <Delete />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            );
-                        })}
-                    </TableBody>
-                </Table>
+                                return (
+                                    <TableRow key={product.id}>
+                                        <TableCell>{product.productId || 'N/A'}</TableCell>
+                                        <TableCell>
+                                            {product.imageFile ? (
+                                                <img
+                                                    src={`${import.meta.env.VITE_FILE_BASE_URL}${product.imageFile}`}
+                                                    alt={product.name}
+                                                    style={{ width: 50, height: 50, objectFit: 'cover' }}
+                                                />
+                                            ) : (
+                                                "No Image"
+                                            )}
+                                        </TableCell>
+                                        <TableCell>{product.sku || 'N/A'}</TableCell>
+                                        <TableCell>{product.name || 'N/A'}</TableCell>
+                                        <TableCell>{product.price || 'N/A'}</TableCell>
+                                        <TableCell>{product.description || 'N/A'}</TableCell>
+                                        <TableCell>
+                                            {product.categoryId
+                                                ? categories.find((cat) => cat.categoryId === product.categoryId)
+                                                      ?.categoryName || 'Uncategorized'
+                                                : 'Uncategorized'}
+                                        </TableCell>
+                                        <TableCell>
+                                            {product.stock > 0 ? product.stock : 'Out of Stock'}
+                                        </TableCell>
+                                        <TableCell>
+                                            {product.createdAt
+                                                ? dayjs(product.createdAt).format('YYYY-MM-DD HH:mm:ss')
+                                                : 'N/A'}
+                                        </TableCell>
+                                        <TableCell>
+                                            {product.updatedAt
+                                                ? dayjs(product.updatedAt).format('YYYY-MM-DD HH:mm:ss')
+                                                : 'N/A'}
+                                        </TableCell>
+                                        <TableCell>
+                                            <IconButton
+                                                component={Link}
+                                                to={`/editproduct/${product.productId}`}
+                                                color="primary"
+                                            >
+                                                <Edit />
+                                            </IconButton>
+                                            <IconButton
+                                                onClick={() => deleteProduct(product.productId, product.name)}
+                                                color="error"
+                                            >
+                                                <Delete />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
+                        </TableBody>
+                    </Table>
+                )}
             </Box>
         </Box>
     );

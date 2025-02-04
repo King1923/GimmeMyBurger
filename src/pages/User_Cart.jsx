@@ -11,11 +11,10 @@ function UserCart() {
     const [totalPrice, setTotalPrice] = useState(0);
     const { user } = useContext(UserContext);
 
-    // Fetch cart items from the server
     const getCartItems = () => {
         http.get('/cart').then((res) => {
-            setCartItems(res.data);
-            calculateTotal(res.data);
+            setCartItems(res.data.filter(item => item.userId === user?.id));
+            calculateTotal(res.data.filter(item => item.userId === user?.id));
         });
     };
 
