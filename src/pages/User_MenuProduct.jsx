@@ -8,11 +8,13 @@ import ClientFooter from '../client/ClientFooter';
 function MenuProduct() {
     const { productId } = useParams(); // Get product ID from the URL
     const navigate = useNavigate();
+    const { user } = useContext(UserContext); // Get logged-in user data
     const [product, setProduct] = useState(null);
-    const [categories, setCategories] = useState([]); // Store category data
-    const [categoryName, setCategoryName] = useState('Unknown'); // Store matched category name
+    const [categories, setCategories] = useState([]);
+    const [categoryName, setCategoryName] = useState('Unknown');
+    const [openSnackbar, setOpenSnackbar] = useState(false);
 
-    // Fetch product details from the server
+    // Fetch product details
     const getProduct = async () => {
         try {
             const res = await http.get(`/product/${productId}`);
@@ -22,7 +24,7 @@ function MenuProduct() {
         }
     };
 
-    // Fetch categories from the server
+    // Fetch categories
     const getCategories = async () => {
         try {
             const res = await http.get('/category');
@@ -32,7 +34,6 @@ function MenuProduct() {
         }
     };
 
-    // Find and set category name based on categoryId
     useEffect(() => {
         if (product && categories.length > 0) {
             const matchedCategory = categories.find(cat => cat.categoryId === product.categoryId);
@@ -44,6 +45,27 @@ function MenuProduct() {
         getProduct();
         getCategories();
     }, [productId]);
+
+    // Function to add product to cart
+    const handleAddToCart = async () => {
+        if (!user) {
+            alert('Please log in to add items to the cart.');
+            return;
+        }
+
+        try {
+            await http.post('/cart', {
+                productId: product.productId,
+                userId: user.id, // Assuming user ID is available in context
+                quantity: 1, // Default quantity as 1
+                totalAmount: product.price
+            });
+
+            setOpenSnackbar(true); // Show success message
+        } catch (error) {
+            console.error('Error adding product to cart:', error);
+        }
+    };
 
     if (!product) {
         return (
@@ -57,14 +79,12 @@ function MenuProduct() {
         <Box>
             <ClientNavbar />
             <Box sx={{ my: 4, px: 2, maxWidth: 800, mx: 'auto' }}>
-                {/* Back Button */}
                 <Button onClick={() => navigate('/menu')} variant="contained" sx={{ mb: 2 }}>
                     Back
                 </Button>
 
                 <Card sx={{ p: 2 }}>
                     <Grid container spacing={2} alignItems="center">
-                        {/* Image on the left */}
                         {product.imageFile && (
                             <Grid item xs={12} sm={5} sx={{ display: 'flex', justifyContent: 'center' }}>
                                 <img
@@ -74,39 +94,56 @@ function MenuProduct() {
                                         width: '320px',
                                         maxWidth: '500px',
                                         height: '250px',
-                                        border: '5px solid black', // Set black border with 5px width
+                                        border: '5px solid black',
                                         borderRadius: '8px'
                                     }}
                                 />
                             </Grid>
                         )}
 
-                        {/* Product details on the right */}
                         <Grid item xs={12} sm={7}>
                             <CardContent>
                                 <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 1 }}>
                                     {product.name}
                                 </Typography>
-
                                 <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
                                     Category: {categoryName}
                                 </Typography>
-
                                 <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 2 }}>
                                     ${product.price.toFixed(2)}
                                 </Typography>
-
                                 <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', textAlign: 'justify' }}>
                                     {product.description}
                                 </Typography>
+
+                                {/* Add to Cart Button */}
+                                <Button
+                                    onClick={handleAddToCart}
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{ mt: 2 }}
+                                >
+                                    Add to Cart
+                                </Button>
                             </CardContent>
                         </Grid>
                     </Grid>
                 </Card>
             </Box>
+
             <ClientFooter />
+
+            {/* Snackbar Notification */}
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={3000}
+                onClose={() => setOpenSnackbar(false)}
+            >
+                <Alert onClose={() => setOpenSnackbar(false)} severity="success">
+                    Item added to cart successfully!
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }
-
 export default MenuProduct;
