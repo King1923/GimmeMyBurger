@@ -4,7 +4,7 @@ import { Container } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import MyTheme from './themes/MyTheme';
-import Tutorials from './pages/User_Home';
+import Promotions from './pages/User_Home';
 import Products from './pages/Admin_Products';
 import AddProduct from './pages/Admin_AddProduct';
 import EditProduct from './pages/Admin_EditProduct';
@@ -22,7 +22,8 @@ import UserContext from './contexts/UserContext';
 import MenuProduct from './pages/User_MenuProduct'; // MenuProduct is for displaying product details
 import AddPromotion from './pages/Admin_AddPromotion';
 import EditPromotion from './pages/Admin_EditPromotion';
-import Promotions from './pages/Admin_Promotions';
+import AdminPromotions from './pages/Admin_Promotions';
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -47,8 +48,7 @@ function App() {
           {/* Main Content */}
           <Container sx={{ minHeight: '100vh' }}>
             <Routes>
-              <Route path={"/"} element={<Tutorials />} />
-              <Route path={"/tutorials"} element={<Tutorials />} />
+              <Route path={"/"} element={<Promotions />} />
               <Route path={"/menu"} element={<UserMenu />} />
               <Route path={"/cart"} element={<UserCart />} />
               <Route path={"/products"} element={<Products />} />
@@ -57,6 +57,7 @@ function App() {
               <Route path={"/addpromotion"} element={<AddPromotion />} />
               <Route path="/editproduct/:id" element={<EditProduct />} />
               <Route path="/editpromotion/:id" element={<EditPromotion />} />
+              <Route path="/adminPromotions" element={<AdminPromotions />} />
               <Route path={"/categories"} element={<Categories />} />
               <Route path={"/addcategory"} element={<AddCategory />} />
               <Route path="/editcategory/:id" element={<EditCategory />} />

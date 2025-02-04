@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, TextField, Button, Grid2 as Grid } from '@mui/material';
+import { Box, Typography, TextField, Button, Grid as MuiGrid } from '@mui/material';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import http from '../http';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AdminSidebar from '../admin/AdminSideBar'; // Import the AdminSidebar
 
 function EditPromotion() {
     const { id } = useParams();
@@ -47,7 +48,7 @@ function EditPromotion() {
             data.title = data.title.trim();
             data.description = data.description.trim();
             http.put(`/promotion/${id}`, data)
-                .then((res) => {
+                .then(() => {
                     navigate("/homepage");
                 });
         }
@@ -65,7 +66,7 @@ function EditPromotion() {
 
     const deletePromotion = () => {
         http.delete(`/promotion/${id}`)
-            .then((res) => {
+            .then(() => {
                 navigate("/homepage");
             });
     };
@@ -95,17 +96,24 @@ function EditPromotion() {
     };
 
     return (
-        <Box>
-            <Typography variant="h5" sx={{ my: 2 }}>
-                Edit Promotion
-            </Typography>
-            {
-                !loading && (
+        <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+            {/* Sidebar */}
+            <AdminSidebar />
+
+            {/* Main Content */}
+            <Box sx={{ flexGrow: 1, padding: 3 }}>
+                <Typography variant="h5" sx={{ my: 2 }}>
+                    Edit Promotion
+                </Typography>
+
+                {!loading && (
                     <Box component="form" onSubmit={formik.handleSubmit}>
-                        <Grid container spacing={2}>
-                            <Grid size={{ xs: 12, md: 6, lg: 8 }}>
+                        <MuiGrid container spacing={2}>
+                            <MuiGrid item xs={12} md={6} lg={8}>
                                 <TextField
-                                    fullWidth margin="dense" autoComplete="off"
+                                    fullWidth
+                                    margin="dense"
+                                    autoComplete="off"
                                     label="Title"
                                     name="title"
                                     value={formik.values.title}
@@ -115,8 +123,11 @@ function EditPromotion() {
                                     helperText={formik.touched.title && formik.errors.title}
                                 />
                                 <TextField
-                                    fullWidth margin="dense" autoComplete="off"
-                                    multiline minRows={2}
+                                    fullWidth
+                                    margin="dense"
+                                    autoComplete="off"
+                                    multiline
+                                    minRows={2}
                                     label="Description"
                                     name="description"
                                     value={formik.values.description}
@@ -125,61 +136,65 @@ function EditPromotion() {
                                     error={formik.touched.description && Boolean(formik.errors.description)}
                                     helperText={formik.touched.description && formik.errors.description}
                                 />
-                            </Grid>
-                            <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                            </MuiGrid>
+                            <MuiGrid item xs={12} md={6} lg={4}>
                                 <Box sx={{ textAlign: 'center', mt: 2 }}>
                                     <Button variant="contained" component="label">
                                         Upload Image
-                                        <input hidden accept="image/*" multiple type="file"
-                                            onChange={onFileChange} />
+                                        <input
+                                            hidden
+                                            accept="image/*"
+                                            type="file"
+                                            onChange={onFileChange}
+                                        />
                                     </Button>
-                                    {
-                                        imageFile && (
-                                            <Box className="aspect-ratio-container" sx={{ mt: 2 }}>
-                                                <img alt="promotion"
-                                                    src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`}>
-                                                </img>
-                                            </Box>
-                                        )
-                                    }
+                                    {imageFile && (
+                                        <Box sx={{ mt: 2 }}>
+                                            <img
+                                                alt="promotion"
+                                                src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`}
+                                                style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }}
+                                            />
+                                        </Box>
+                                    )}
                                 </Box>
-                            </Grid>
-                        </Grid>
+                            </MuiGrid>
+                        </MuiGrid>
                         <Box sx={{ mt: 2 }}>
                             <Button variant="contained" type="submit">
                                 Update
                             </Button>
-                            <Button variant="contained" sx={{ ml: 2 }} color="error"
-                                onClick={handleOpen}>
+                            <Button
+                                variant="contained"
+                                sx={{ ml: 2 }}
+                                color="error"
+                                onClick={handleOpen}
+                            >
                                 Delete
                             </Button>
                         </Box>
                     </Box>
-                )
-            }
+                )}
 
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>
-                    Delete Promotion
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Are you sure you want to delete this promotion?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button variant="contained" color="inherit"
-                        onClick={handleClose}>
-                        Cancel
-                    </Button>
-                    <Button variant="contained" color="error"
-                        onClick={deletePromotion}>
-                        Delete
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                <Dialog open={open} onClose={handleClose}>
+                    <DialogTitle>Delete Promotion</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Are you sure you want to delete this promotion?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button variant="contained" color="inherit" onClick={handleClose}>
+                            Cancel
+                        </Button>
+                        <Button variant="contained" color="error" onClick={deletePromotion}>
+                            Delete
+                        </Button>
+                    </DialogActions>
+                </Dialog>
 
-            <ToastContainer />
+                <ToastContainer />
+            </Box>
         </Box>
     );
 }

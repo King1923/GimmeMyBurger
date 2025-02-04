@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, TextField, Button, Grid2 as Grid } from '@mui/material';
+import { Box, Typography, TextField, Button, Grid as MuiGrid } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AdminSidebar from '../admin/AdminSideBar'; // Import the AdminSidebar
 
 function AddPromotion() {
     const navigate = useNavigate();
@@ -33,8 +34,7 @@ function AddPromotion() {
             data.title = data.title.trim();
             data.description = data.description.trim();
             http.post("/promotion", data)
-                .then((res) => {
-                    console.log(res.data);
+                .then(() => {
                     navigate("/homepage");
                 });
         }
@@ -58,69 +58,84 @@ function AddPromotion() {
                 .then((res) => {
                     setImageFile(res.data.filename);
                 })
-                .catch(function (error) {
+                .catch((error) => {
                     console.log(error.response);
                 });
         }
     };
 
     return (
-        <Box>
-            <Typography variant="h5" sx={{ my: 2 }}>
-                Add Promotion
-            </Typography>
-            <Box component="form" onSubmit={formik.handleSubmit}>
-                <Grid container spacing={2}>
-                    <Grid size={{ xs: 12, md: 6, lg: 8 }}>
-                        <TextField
-                            fullWidth margin="dense" autoComplete="off"
-                            label="Title"
-                            name="title"
-                            value={formik.values.title}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.title && Boolean(formik.errors.title)}
-                            helperText={formik.touched.title && formik.errors.title}
-                        />
-                        <TextField
-                            fullWidth margin="dense" autoComplete="off"
-                            multiline minRows={2}
-                            label="Description"
-                            name="description"
-                            value={formik.values.description}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.description && Boolean(formik.errors.description)}
-                            helperText={formik.touched.description && formik.errors.description}
-                        />
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-                        <Box sx={{ textAlign: 'center', mt: 2 }}>
-                            <Button variant="contained" component="label">
-                                Upload Image
-                                <input hidden accept="image/*" multiple type="file"
-                                    onChange={onFileChange} />
-                            </Button>
-                            {
-                                imageFile && (
-                                    <Box className="aspect-ratio-container" sx={{ mt: 2 }}>
-                                        <img alt="promotion"
-                                            src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`}>
-                                        </img>
-                                    </Box>
-                                )
-                            }
-                        </Box>
-                    </Grid>
-                </Grid>
-                <Box sx={{ mt: 2 }}>
-                    <Button variant="contained" type="submit">
-                        Add
-                    </Button>
-                </Box>
-            </Box>
+        <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+            {/* Sidebar */}
+            <AdminSidebar />
 
-            <ToastContainer />
+            {/* Main Content */}
+            <Box sx={{ flexGrow: 1, padding: 3 }}>
+                <Typography variant="h5" sx={{ my: 2 }}>
+                    Add Promotion
+                </Typography>
+                <Box component="form" onSubmit={formik.handleSubmit}>
+                    <MuiGrid container spacing={2}>
+                        <MuiGrid item xs={12} md={6} lg={8}>
+                            <TextField
+                                fullWidth
+                                margin="dense"
+                                autoComplete="off"
+                                label="Title"
+                                name="title"
+                                value={formik.values.title}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.title && Boolean(formik.errors.title)}
+                                helperText={formik.touched.title && formik.errors.title}
+                            />
+                            <TextField
+                                fullWidth
+                                margin="dense"
+                                autoComplete="off"
+                                multiline
+                                minRows={2}
+                                label="Description"
+                                name="description"
+                                value={formik.values.description}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.description && Boolean(formik.errors.description)}
+                                helperText={formik.touched.description && formik.errors.description}
+                            />
+                        </MuiGrid>
+                        <MuiGrid item xs={12} md={6} lg={4}>
+                            <Box sx={{ textAlign: 'center', mt: 2 }}>
+                                <Button variant="contained" component="label">
+                                    Upload Image
+                                    <input
+                                        hidden
+                                        accept="image/*"
+                                        type="file"
+                                        onChange={onFileChange}
+                                    />
+                                </Button>
+                                {imageFile && (
+                                    <Box sx={{ mt: 2 }}>
+                                        <img
+                                            alt="promotion"
+                                            src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`}
+                                            style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }}
+                                        />
+                                    </Box>
+                                )}
+                            </Box>
+                        </MuiGrid>
+                    </MuiGrid>
+                    <Box sx={{ mt: 2 }}>
+                        <Button variant="contained" type="submit">
+                            Add
+                        </Button>
+                    </Box>
+                </Box>
+
+                <ToastContainer />
+            </Box>
         </Box>
     );
 }

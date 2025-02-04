@@ -1,142 +1,176 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Typography, Grid2 as Grid, Card, CardContent, Input, IconButton, Button } from '@mui/material';
-import { AccountCircle, AccessTime, Search, Clear, Edit } from '@mui/icons-material';
+import { Box, Typography, Card, CardContent, Input, IconButton, Button } from '@mui/material';
+import { AccountCircle, AccessTime, Search, Clear, Edit, Add } from '@mui/icons-material';
 import http from '../http';
 import dayjs from 'dayjs';
 import UserContext from '../contexts/UserContext';
 import global from '../global';
-import ClientNavbar from '../client/ClientNavBar';
+
+// Import the navbar and footer components
+import ClientNavbar from '../client/ClientNavbar';
 import ClientFooter from '../client/ClientFooter';
 
-function Tutorials() {
-    const [tutorialList, setTutorialList] = useState([]);
-    const [search, setSearch] = useState('');
-    const { user } = useContext(UserContext);
+function Promotions() {
+  const [promotionList, setPromotionList] = useState([]);
+  const [search, setSearch] = useState('');
+  const { user } = useContext(UserContext);
 
-    const onSearchChange = (e) => {
-        setSearch(e.target.value);
-    };
+  const onSearchChange = (e) => {
+    setSearch(e.target.value);
+  };
 
-    const getTutorials = () => {
-        http.get('/tutorial').then((res) => {
-            setTutorialList(res.data);
-        });
-    };
-
-    const searchTutorials = () => {
-        http.get(`/tutorial?search=${search}`).then((res) => {
-            setTutorialList(res.data);
-        });
-    };
-
-    useEffect(() => {
-        getTutorials();
-    }, []);
-
-    const onSearchKeyDown = (e) => {
-        if (e.key === "Enter") {
-            searchTutorials();
+  const getPromotions = () => {
+    http.get('/promotion')
+      .then((res) => {
+        console.log('API Response:', res.data); // Check the structure of the response
+        if (Array.isArray(res.data)) {
+          setPromotionList(res.data); // If it's an array, set it directly
+        } else if (res.data && Array.isArray(res.data.promotions)) {
+          setPromotionList(res.data.promotions); // Handle nested arrays if needed
+        } else {
+          setPromotionList([]); // Set an empty array if no valid data
         }
-    };
+      })
+      .catch((error) => {
+        console.error('Error fetching promotions:', error);
+        setPromotionList([]); // Prevent errors if the API call fails
+      });
+  };
+  
 
-    const onClickSearch = () => {
-        searchTutorials();
+  const searchPromotions = () => {
+    http.get(`/promotion?search=${search}`).then((res) => {
+      setPromotionList(res.data);
+    });
+  };
+
+  useEffect(() => {
+    getPromotions();
+  }, []);
+
+  const onSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      searchPromotions();
     }
+  };
 
-    const onClickClear = () => {
-        setSearch('');
-        getTutorials();
-    };
+  const onClickSearch = () => {
+    searchPromotions();
+  };
 
-    return (
-        <Box>
-            <ClientNavbar/>
-            <Typography variant="h5" sx={{ my: 2 }}>
-               Home
-            </Typography>
+  const onClickClear = () => {
+    setSearch('');
+    getPromotions();
+  };
 
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Input value={search} placeholder="Search"
-                    onChange={onSearchChange}
-                    onKeyDown={onSearchKeyDown} />
-                <IconButton color="primary"
-                    onClick={onClickSearch}>
-                    <Search />
-                </IconButton>
-                <IconButton color="primary"
-                    onClick={onClickClear}>
-                    <Clear />
-                </IconButton>
-                <Box sx={{ flexGrow: 1 }} />
-                {
-                    user && (
-                        <Link to="/addtutorial">
-                            <Button variant='contained'>
-                                Add
-                            </Button>
-                        </Link>
-                    )
-                }
-            </Box>
+  return (
+    <>
+      {/* Render the Client Navbar at the top */}
+      <ClientNavbar />
 
-            <Grid container spacing={2}>
-                {
-                    tutorialList.map((tutorial, i) => {
-                        return (
-                            <Grid size={{xs:12, md:6, lg:4}} key={tutorial.id}>
-                                <Card>
-                                    {
-                                        tutorial.imageFile && (
-                                            <Box className="aspect-ratio-container">
-                                                <img alt="tutorial"
-                                                    src={`${import.meta.env.VITE_FILE_BASE_URL}${tutorial.imageFile}`}>
-                                                </img>
-                                            </Box>
-                                        )
-                                    }
-                                    <CardContent>
-                                        <Box sx={{ display: 'flex', mb: 1 }}>
-                                            <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                                                {tutorial.title}
-                                            </Typography>
-                                            {
-                                                user && user.id === tutorial.userId && (
-                                                    <Link to={`/edittutorial/${tutorial.id}`}>
-                                                        <IconButton color="primary" sx={{ padding: '4px' }}>
-                                                            <Edit />
-                                                        </IconButton>
-                                                    </Link>
-                                                )
-                                            }
-                                        </Box>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
-                                            color="text.secondary">
-                                            <AccountCircle sx={{ mr: 1 }} />
-                                            <Typography>
-                                                {tutorial.user?.name}
-                                            </Typography>
-                                        </Box>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
-                                            color="text.secondary">
-                                            <AccessTime sx={{ mr: 1 }} />
-                                            <Typography>
-                                                {dayjs(tutorial.createdAt).format(global.datetimeFormat)}
-                                            </Typography>
-                                        </Box>
-                                        <Typography sx={{ whiteSpace: 'pre-wrap' }}>
-                                            {tutorial.description}
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        );
-                    })
-                }
-            </Grid>
-            <ClientFooter/>
+      {/* Main Content */}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          // Adjust the minHeight if necessary to account for the navbar/footer heights
+          minHeight: 'calc(100vh - 96px - 64px)', 
+          px: 2,
+          py: 2,
+        }}
+      >
+        <Typography variant="h5" sx={{ my: 2 }}>
+          Home
+        </Typography>
+
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, width: '100%', maxWidth: '600px' }}>
+          <Input
+            fullWidth
+            value={search}
+            placeholder="Search"
+            onChange={onSearchChange}
+            onKeyDown={onSearchKeyDown}
+          />
+          <IconButton color="primary" onClick={onClickSearch}>
+            <Search />
+          </IconButton>
+          <IconButton color="primary" onClick={onClickClear}>
+            <Clear />
+          </IconButton>
+          <Link to="/addpromotion" style={{ marginLeft: 'auto' }}>
+            <Button variant="contained" startIcon={<Add />}>
+              Add Promotion
+            </Button>
+          </Link>
         </Box>
-    );
+
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+            width: '100%',
+            maxWidth: '600px',
+          }}
+        >
+          {promotionList.map((promotion) => (
+            <Card key={promotion.id} sx={{ width: '100%' }}>
+              {promotion.imageFile && (
+                <Box
+                  sx={{
+                    width: '100%',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    backgroundColor: '#f5f5f5',
+                    aspectRatio: '1',
+                  }}
+                >
+                  <img
+                    alt="promotion"
+                    src={`${import.meta.env.VITE_FILE_BASE_URL}${promotion.imageFile}`}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                    }}
+                  />
+                </Box>
+              )}
+              <CardContent>
+                <Box sx={{ display: 'flex', mb: 1 }}>
+                  <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                    {promotion.title}
+                  </Typography>
+                  <Link to={`/editpromotion/${promotion.id}`}>
+                    <IconButton color="primary" sx={{ padding: '4px' }}>
+                      <Edit />
+                    </IconButton>
+                  </Link>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
+                  <AccessTime sx={{ mr: 1 }} />
+                  <Typography>
+                    {dayjs(promotion.createdAt).format(global.datetimeFormat)}
+                  </Typography>
+                </Box>
+                <Typography sx={{ whiteSpace: 'pre-wrap' }}>
+                  {promotion.description}
+                </Typography>
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+      </Box>
+
+      {/* Render the Client Footer at the bottom */}
+      <ClientFooter />
+    </>
+  );
 }
 
-export default Tutorials;
+export default Promotions;
