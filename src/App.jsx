@@ -22,6 +22,7 @@ import UserContext from './contexts/UserContext';
 import MenuProduct from './pages/User_MenuProduct'; // MenuProduct is for displaying product details
 import AddPromotion from './pages/Admin_AddPromotion';
 import EditPromotion from './pages/Admin_EditPromotion';
+import Promotions from './pages/Admin_Promotions';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -51,6 +52,7 @@ function App() {
               <Route path={"/menu"} element={<UserMenu />} />
               <Route path={"/cart"} element={<UserCart />} />
               <Route path={"/products"} element={<Products />} />
+              <Route path='/promotions' element={<Promotions />} />
               <Route path={"/addproduct"} element={<AddProduct />} />
               <Route path={"/addpromotion"} element={<AddPromotion />} />
               <Route path="/editproduct/:id" element={<EditProduct />} />
