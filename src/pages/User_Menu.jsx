@@ -11,6 +11,7 @@ import {
     ListItem,
     ListItemButton,
     ListItemText,
+    Button
 } from '@mui/material';
 import { Search, Clear } from '@mui/icons-material';
 import http from '../http';
@@ -37,20 +38,37 @@ function UserMenu() {
     // Fetch products based on search and category
     const getProducts = async () => {
         try {
-            // Construct query params based on selected category and search term
+            // Construct query params for API call
             const queryParams = [];
             if (category !== 'All') queryParams.push(`category=${encodeURIComponent(category)}`);
             if (search) queryParams.push(`search=${encodeURIComponent(search)}`);
+    
             const url = `/product${queryParams.length > 0 ? `?${queryParams.join('&')}` : ''}`;
             const res = await http.get(url);
     
-            // Filter the products manually if needed (in case backend does not filter by category correctly)
-            const filteredProducts = res.data.filter((product) =>
-                category === 'All' || product.category === category
+            console.log("Fetched Products:", res.data);  // Debugging line
+            console.log("Selected Category:", category); // Debugging line
+    
+            // Find the matching category object
+            const selectedCategoryObj = categories.find(
+                (cat) => cat.categoryName.toLowerCase().trim() === category.toLowerCase().trim()
             );
+    
+            if (!selectedCategoryObj && category !== "All") {
+                console.error("Selected category not found in category list.");
+                setProductList([]); // Avoid showing incorrect data
+                return;
+            }
+    
+            // Filter products by category ID (if backend does not handle this)
+            const filteredProducts = res.data.filter((product) =>
+                category === "All" || product.categoryId === selectedCategoryObj.categoryId
+            );
+    
+            console.log("Filtered Products:", filteredProducts);  // Debugging line
             setProductList(filteredProducts);
         } catch (error) {
-            console.error('Error fetching products:', error);
+            console.error("Error fetching products:", error);
         }
     };
 
@@ -91,7 +109,7 @@ function UserMenu() {
         <Box>
             <ClientNavbar />
             <Typography variant="h5" sx={{ my: 2, textAlign: 'center' }}>
-                Food Menu
+                Gimme My Burger Menu
             </Typography>
 
             <Box sx={{ display: 'flex', mb: 2 }}>
@@ -134,34 +152,40 @@ function UserMenu() {
                     <Grid container spacing={2}>
                         {productList.map((product) => (
                             <Grid item xs={12} md={6} lg={4} key={product.id}>
-                                {/* Link to product details page */}
-                                <Link to={`/product/${product.id}`} style={{ textDecoration: 'none' }}>
-                                    <Card>
-                                        {product.imageFile && (
-                                            <Box className="aspect-ratio-container" sx={{ textAlign: 'center' }}>
-                                                <img
-                                                    alt={product.name}
-                                                    src={`${import.meta.env.VITE_FILE_BASE_URL}${product.imageFile}`}
-                                                    style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }}
-                                                />
-                                            </Box>
-                                        )}
-                                        <CardContent>
-                                            <Typography variant="h6" sx={{ textAlign: 'center', fontWeight: 'bold' }}>
-                                                {product.name}
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', mb: 1 }}>
-                                                {product.category}
-                                            </Typography>
-                                            <Typography variant="body1" sx={{ textAlign: 'center', fontWeight: 'bold', mb: 1 }}>
-                                                ${product.price.toFixed(2)}
-                                            </Typography>
-                                            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', textAlign: 'center' }}>
-                                                {product.description}
-                                            </Typography>
-                                        </CardContent>
-                                    </Card>
-                                </Link>
+                                <Card>
+                                    {product.imageFile && (
+                                        <Box className="aspect-ratio-container" sx={{ textAlign: 'center' }}>
+                                            <img
+                                                alt={product.name}
+                                                src={`${import.meta.env.VITE_FILE_BASE_URL}${product.imageFile}`}
+                                                style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }}
+                                            />
+                                        </Box>
+                                    )}
+                                    <CardContent>
+                                        <Typography variant="h6" sx={{ textAlign: 'center', fontWeight: 'bold' }}>
+                                            {product.name}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', mb: 1 }}>
+                                            {product.category}
+                                        </Typography>
+                                        <Typography variant="body1" sx={{ textAlign: 'center', fontWeight: 'bold', mb: 1 }}>
+                                            ${product.price.toFixed(2)}
+                                        </Typography>
+                                        <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', textAlign: 'center', mb: 2 }}>
+                                            {product.description}
+                                        </Typography>
+                                        
+                                        {/* Add to Cart Button */}
+                                        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                            <Link to={`/product/${product.productId}`} style={{ textDecoration: 'none' }}>
+                                                <Button variant="contained" color="primary">
+                                                    Add to Cart
+                                                </Button>
+                                            </Link>
+                                        </Box>
+                                    </CardContent>
+                                </Card>
                             </Grid>
                         ))}
                     </Grid>

@@ -46,6 +46,15 @@ function AddCategory() {
     return (
         <Box sx={{ flexGrow: 1, paddingLeft: '250px', paddingTop: '16px' }}>
             <AdminSidebar />
+             {/* Back Button */}
+                        <Button 
+                          variant="contained" 
+                          color="primary" 
+                          sx={{ mb: 2 }} 
+                          onClick={() => navigate('/categories')}
+                        >
+                          Back
+                        </Button>
             <Typography variant="h5" sx={{ my: 2 }}>
                 Add Category
             </Typography>

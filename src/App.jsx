@@ -58,7 +58,7 @@ function App() {
               <Route path={"/categories"} element={<Categories />} />
               <Route path={"/addcategory"} element={<AddCategory />} />
               <Route path="/editcategory/:id" element={<EditCategory />} />
-              <Route path={"/product/:id"} element={<MenuProduct />} /> {/* This route handles the product details page */}
+              <Route path="/product/:productId" element={<MenuProduct />} /> {/* This route handles the product details page */}
               <Route path={"/order"} element={<Orders />} />
               <Route path={"/register"} element={<Register />} />
               <Route path={"/login"} element={<Login />} />

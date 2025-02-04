@@ -28,8 +28,7 @@ function EditProduct() {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    http
-      .get(`/product/${id}`)
+    http.get(`/product/${id}`)
       .then((res) => {
         setProduct(res.data);
         setImageFile(res.data.imageFile);
@@ -40,8 +39,7 @@ function EditProduct() {
         toast.error('Error fetching product details');
       });
 
-    http
-      .get('/category')
+    http.get('/category')
       .then((res) => {
         setCategories(res.data);
       })
@@ -54,6 +52,7 @@ function EditProduct() {
   const formik = useFormik({
     initialValues: product
       ? {
+          ProductId: product.productId,
           name: product.name,
           description: product.description,
           SKU: product.sku,
@@ -62,6 +61,7 @@ function EditProduct() {
           stock: product.stock,
         }
       : {
+          ProductId: id,
           name: '',
           description: '',
           SKU: '',
@@ -96,6 +96,7 @@ function EditProduct() {
     onSubmit: (data) => {
       const updatedData = {
         ...data,
+        ProductId: id,
         price: parseFloat(data.price),
         stock: parseInt(data.stock, 10),
       };
@@ -133,19 +134,18 @@ function EditProduct() {
 
       const formData = new FormData();
       formData.append('file', file);
-      http
-        .post('/file/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then((res) => {
-          setImageFile(res.data.filename);
-        })
-        .catch((error) => {
-          console.error('Error uploading file:', error);
-          toast.error('Error uploading image');
-        });
+      http.post('/file/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then((res) => {
+        setImageFile(res.data.filename);
+      })
+      .catch((error) => {
+        console.error('Error uploading file:', error);
+        toast.error('Error uploading image');
+      });
     }
   };
 
@@ -156,98 +156,36 @@ function EditProduct() {
   return (
     <Box sx={{ flexGrow: 1, paddingLeft: '250px', paddingTop: '16px' }}>
       <AdminSidebar />
+        
+      {/* Back Button */}
+      <Button 
+        variant="contained" 
+        color="primary" 
+        sx={{ mb: 2 }} 
+        onClick={() => navigate('/products')}
+      >
+        Back
+      </Button>
+
       <Typography variant="h5" sx={{ my: 2 }}>
         Edit Product
       </Typography>
       <Box component="form" onSubmit={formik.handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6} lg={8}>
-            <TextField
-              fullWidth
-              margin="dense"
-              autoComplete="off"
-              label="Name"
-              name="name"
-              value={formik.values.name}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.name && Boolean(formik.errors.name)}
-              helperText={formik.touched.name && formik.errors.name}
-            />
-            <TextField
-              fullWidth
-              margin="dense"
-              autoComplete="off"
-              label="Description"
-              name="description"
-              value={formik.values.description}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.description && Boolean(formik.errors.description)}
-              helperText={formik.touched.description && formik.errors.description}
-            />
-            <TextField
-              fullWidth
-              margin="dense"
-              autoComplete="off"
-              label="SKU"
-              name="SKU"
-              type="number"
-              value={formik.values.SKU}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.SKU && Boolean(formik.errors.SKU)}
-              helperText={formik.touched.SKU && formik.errors.SKU}
-            />
-            <TextField
-              fullWidth
-              margin="dense"
-              autoComplete="off"
-              label="Price"
-              name="price"
-              type="number"
-              value={formik.values.price}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.price && Boolean(formik.errors.price)}
-              helperText={formik.touched.price && formik.errors.price}
-            />
+            <TextField fullWidth margin="dense" autoComplete="off" label="Name" name="name" {...formik.getFieldProps('name')} error={formik.touched.name && Boolean(formik.errors.name)} helperText={formik.touched.name && formik.errors.name} />
+            <TextField fullWidth margin="dense" autoComplete="off" label="Description" name="description" {...formik.getFieldProps('description')} error={formik.touched.description && Boolean(formik.errors.description)} helperText={formik.touched.description && formik.errors.description} />
+            <TextField fullWidth margin="dense" autoComplete="off" label="SKU" name="SKU" type="number" {...formik.getFieldProps('SKU')} error={formik.touched.SKU && Boolean(formik.errors.SKU)} helperText={formik.touched.SKU && formik.errors.SKU} />
+            <TextField fullWidth margin="dense" autoComplete="off" label="Price" name="price" type="number" {...formik.getFieldProps('price')} error={formik.touched.price && Boolean(formik.errors.price)} helperText={formik.touched.price && formik.errors.price} />
             <FormControl fullWidth margin="dense">
               <InputLabel>Category</InputLabel>
-              <Select
-                label="Category"
-                name="categoryId"
-                value={formik.values.categoryId}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.categoryId && Boolean(formik.errors.categoryId)}
-              >
-                {categories.length > 0 ? (
-                  categories.map((category) => (
-                    <MenuItem key={category.categoryId} value={category.categoryId}>
-                      {category.categoryName}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem value="" disabled>
-                    No categories available
-                  </MenuItem>
-                )}
+              <Select name="categoryId" {...formik.getFieldProps('categoryId')} error={formik.touched.categoryId && Boolean(formik.errors.categoryId)}>
+                {categories.map((category) => (
+                  <MenuItem key={category.categoryId} value={category.categoryId}>{category.categoryName}</MenuItem>
+                ))}
               </Select>
             </FormControl>
-            <TextField
-              fullWidth
-              margin="dense"
-              autoComplete="off"
-              label="Stock"
-              name="stock"
-              type="number"
-              value={formik.values.stock}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.stock && Boolean(formik.errors.stock)}
-              helperText={formik.touched.stock && formik.errors.stock}
-            />
+            <TextField fullWidth margin="dense" autoComplete="off" label="Stock" name="stock" type="number" {...formik.getFieldProps('stock')} error={formik.touched.stock && Boolean(formik.errors.stock)} helperText={formik.touched.stock && formik.errors.stock} />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
             <Box sx={{ textAlign: 'center', mt: 2 }}>
@@ -267,13 +205,13 @@ function EditProduct() {
                 <Typography>No image available</Typography>
               )}
             </Box>
-          </Grid>
+            </Grid>
         </Grid>
         <Box sx={{ mt: 2 }}>
-          <Button variant="contained" type="submit">
+          <Button variant="contained" type="submit" disabled={!formik.dirty}>
             Update
           </Button>
-          <Button variant="contained" color="warning" sx={{ ml: 2 }} onClick={handleCancel}>
+          <Button variant="contained" color="warning" sx={{ ml: 2 }} onClick={handleCancel} disabled={!formik.dirty}>
             Cancel
           </Button>
         </Box>
