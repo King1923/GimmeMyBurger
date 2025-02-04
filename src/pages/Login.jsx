@@ -7,6 +7,7 @@ import http from '../http';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import UserContext from '../contexts/UserContext';
+import ClientNavbar from '../client/ClientNavBar';
 
 function Login() {
     const navigate = useNavigate();
@@ -34,7 +35,7 @@ function Login() {
                 .then((res) => {
                     localStorage.setItem("accessToken", res.data.accessToken);
                     setUser(res.data.user);
-                    navigate("/products");
+                    navigate("/rewards");
                 })
                 .catch(function (err) {
                     toast.error(`${err.response.data.message}`);
@@ -49,6 +50,7 @@ function Login() {
             flexDirection: 'column',
             alignItems: 'center'
         }}>
+            <ClientNavbar/>
             <Typography variant="h5" sx={{ my: 2 }}>
                 Login
             </Typography>

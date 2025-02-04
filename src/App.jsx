@@ -15,8 +15,6 @@ import Orders from './pages/Admin_Orders';
 import MyForm from './pages/MyForm';
 import UserMenu from './pages/User_Menu';
 import UserCart from './pages/User_Cart';
-import Register from './pages/Register';
-import Login from './pages/Login';
 import http from './http';
 import UserContext from './contexts/UserContext';
 import MenuProduct from './pages/User_MenuProduct'; // MenuProduct is for displaying product details
@@ -24,6 +22,15 @@ import AddPromotion from './pages/Admin_AddPromotion';
 import EditPromotion from './pages/Admin_EditPromotion';
 import AdminPromotions from './pages/Admin_Promotions';
 
+
+import Register from './pages/Register';
+import Login from './pages/Login';
+import Rewards from './pages/Rewards';
+import AddReward from './pages/AddReward';
+import EditReward from './pages/EditReward';
+import ProfileInfo from './pages/ProfileInfo';
+import EditProfile from './pages/EditProfile'; // Import the EditProfile page
+import ResetPassword from './pages/ResetPassword';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -37,8 +44,11 @@ function App() {
   }, []);
 
   const logout = () => {
-    localStorage.clear();
-    window.location = "/";
+    const confirmLogout = window.confirm("Are you sure you want to log out?");
+    if (confirmLogout) {
+      localStorage.clear();
+      window.location = "/";
+    }
   };
 
   return (
@@ -48,7 +58,7 @@ function App() {
           {/* Main Content */}
           <Container sx={{ minHeight: '100vh' }}>
             <Routes>
-              <Route path={"/"} element={<Promotions />} />
+              <Route path="/" element={<Login />} />
               <Route path={"/menu"} element={<UserMenu />} />
               <Route path={"/cart"} element={<UserCart />} />
               <Route path={"/products"} element={<Products />} />
@@ -63,9 +73,16 @@ function App() {
               <Route path="/editcategory/:id" element={<EditCategory />} />
               <Route path="/product/:productId" element={<MenuProduct />} /> {/* This route handles the product details page */}
               <Route path={"/order"} element={<Orders />} />
-              <Route path={"/register"} element={<Register />} />
-              <Route path={"/login"} element={<Login />} />
               <Route path={"/form"} element={<MyForm />} />
+              
+              <Route path="/rewards" element={<Rewards />} />
+              <Route path="/addreward" element={<AddReward />} />
+              <Route path="/editreward/:id" element={<EditReward />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/profile/:id" element={<ProfileInfo />} />
+              <Route path="/editprofile/:id" element={<EditProfile />} /> {/* New route for editing profile */}
+              <Route path="/reset-password/:id" element={<ResetPassword />} />
             </Routes>
           </Container>
         </ThemeProvider>

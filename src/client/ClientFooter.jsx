@@ -24,9 +24,7 @@ const ClientFooter = () => {
     >
       <Container>
         <Box sx={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
-        <Link to="/tutorials" style={{ textDecoration: 'none', color: 'orange', marginRight: '15px' }}>
             <Typography>Home</Typography>
-          </Link>
           <Link to="/menu" style={{ textDecoration: 'none', color: 'orange', marginRight: '15px' }}>
             <Typography>Menu</Typography>
           </Link>
