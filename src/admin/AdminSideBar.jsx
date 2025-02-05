@@ -106,7 +106,7 @@ const AdminSidebar = () => {
         <ListItem
           button
           component={NavLink}
-          to="/promotions"
+          to="/AdminPromotions"
           sx={{
             justifyContent: 'center',
             textAlign: 'center',
@@ -123,6 +123,28 @@ const AdminSidebar = () => {
           }}
         >
           <ListItemText primary="Promotions" />
+        </ListItem>
+
+        <ListItem
+          button
+          component={NavLink}
+          to="/inventory"
+          sx={{
+            justifyContent: 'center',
+            textAlign: 'center',
+            fontWeight: 'bold',
+            fontSize: '1.1rem',
+            color: 'inherit',
+            '&.active': {
+              color: 'white',
+              backgroundColor: 'green',
+            },
+            '&:hover': {
+              backgroundColor: 'yellow',
+            },
+          }}
+        >
+          <ListItemText primary="Inventory" />
         </ListItem>
 
         {user ? (

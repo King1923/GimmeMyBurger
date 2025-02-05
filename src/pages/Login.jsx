@@ -7,7 +7,7 @@ import http from '../http';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import UserContext from '../contexts/UserContext';
-import ClientNavbar from '../client/ClientNavBar';
+import ClientNavbar from '../client/ClientNavbar';
 
 function Login() {
     const navigate = useNavigate();

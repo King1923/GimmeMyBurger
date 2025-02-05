@@ -18,22 +18,10 @@ function Inventory() {
     };
 
     const getInventory = () => {
-        http.get('/inventory')
-            .then((res) => {
-                if (Array.isArray(res.data)) {
-                    setInventoryList(res.data); // Directly set if it's an array
-                } else if (res.data && Array.isArray(res.data.inventory)) {
-                    setInventoryList(res.data.inventory); // Handle nested arrays
-                } else {
-                    setInventoryList([]); // Fallback to an empty array if no valid data
-                }
-            })
-            .catch((err) => {
-                console.error('Error fetching inventory:', err);
-                setInventoryList([]); // Prevent errors by setting an empty array on failure
-            });
+        http.get('/inventory').then((res) => {
+            setInventoryList(res.data);
+        });
     };
-    
 
     const searchInventory = () => {
         http.get(`/inventory?search=${search}`).then((res) => {
@@ -93,37 +81,42 @@ function Inventory() {
 
                 {/* Inventory List */}
                 <Grid container spacing={2}>
-                    {inventoryList.map((inventory) => (
-                        <Grid item xs={12} md={6} lg={4} key={inventory.itemId}>
-                            <Card>
-                                <CardContent>
-                                    <Box sx={{ display: 'flex', mb: 1 }}>
-                                        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                                            {inventory.item}
+                    {Array.isArray(inventoryList) && inventoryList.length > 0 ? (
+                        inventoryList.map((inventory) => (
+                            <Grid item xs={12} md={6} lg={4} key={inventory.itemId}>
+                                <Card>
+                                    <CardContent>
+                                        <Box sx={{ display: 'flex', mb: 1 }}>
+                                            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                                                {inventory.item}
+                                            </Typography>
+                                            <Link to={`/editinventory/${inventory.id}`}>
+                                                <IconButton color="primary" sx={{ padding: '4px' }}>
+                                                    <Edit />
+                                                </IconButton>
+                                            </Link>
+                                        </Box>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
+                                            <AccessTime sx={{ mr: 1 }} />
+                                            <Typography>
+                                                {dayjs(inventory.createdAt).format(global.datetimeFormat)}
+                                            </Typography>
+                                        </Box>
+                                        <Typography sx={{ whiteSpace: 'pre-wrap' }}>
+                                            {inventory.description}
                                         </Typography>
-                                        <Link to={`/editinventory/${inventory.id}`}>
-                                            <IconButton color="primary" sx={{ padding: '4px' }}>
-                                                <Edit />
-                                            </IconButton>
-                                        </Link>
-                                    </Box>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
-                                        <AccessTime sx={{ mr: 1 }} />
-                                        <Typography>
-                                            {dayjs(inventory.createdAt).format(global.datetimeFormat)}
+                                        <Typography sx={{ mt: 1 }}>
+                                            <strong>Quantity:</strong> {inventory.quantity}
                                         </Typography>
-                                    </Box>
-                                    <Typography sx={{ whiteSpace: 'pre-wrap' }}>
-                                        {inventory.description}
-                                    </Typography>
-                                    <Typography sx={{ mt: 1 }}>
-                                        <strong>Quantity:</strong> {inventory.quantity}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    ))}
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))
+                    ) : (
+                        <Typography>No inventory items found.</Typography>
+                    )}
                 </Grid>
+
             </Box>
         </Box>
     );

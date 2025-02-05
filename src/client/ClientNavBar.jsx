@@ -54,7 +54,7 @@ const ClientNavbar = () => {
               Gimme My Burger
             </Typography>
           </Link>
-          <Link to="/tutorials" style={{ textDecoration: 'none', color: 'orange', marginRight: '15px' }}>
+          <Link to="/promotions" style={{ textDecoration: 'none', color: 'orange', marginRight: '15px' }}>
             <Typography>Home</Typography>
           </Link>
           <Link to="/menu" style={{ textDecoration: 'none', color: 'orange', marginRight: '15px' }}>

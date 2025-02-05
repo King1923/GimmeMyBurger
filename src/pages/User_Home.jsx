@@ -99,11 +99,6 @@ function Promotions() {
           <IconButton color="primary" onClick={onClickClear}>
             <Clear />
           </IconButton>
-          <Link to="/addpromotion" style={{ marginLeft: 'auto' }}>
-            <Button variant="contained" startIcon={<Add />}>
-              Add Promotion
-            </Button>
-          </Link>
         </Box>
 
         <Box
@@ -146,11 +141,6 @@ function Promotions() {
                   <Typography variant="h6" sx={{ flexGrow: 1 }}>
                     {promotion.title}
                   </Typography>
-                  <Link to={`/editpromotion/${promotion.id}`}>
-                    <IconButton color="primary" sx={{ padding: '4px' }}>
-                      <Edit />
-                    </IconButton>
-                  </Link>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
                   <AccessTime sx={{ mr: 1 }} />

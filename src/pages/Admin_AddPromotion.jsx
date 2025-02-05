@@ -35,7 +35,7 @@ function AddPromotion() {
             data.description = data.description.trim();
             http.post("/promotion", data)
                 .then(() => {
-                    navigate("/homepage");
+                    navigate("/Admin_Promotions");
                 });
         }
     });

@@ -17,7 +17,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import http from '../http';
 import { toast } from 'react-toastify';
 import defaultProfile from '../assets/profile.webp';
-import ClientNavbar from '../client/ClientNavBar';
+import ClientNavbar from '../client/ClientNavbar';
+
+
 
 function ProfileInfo() {
   const { id } = useParams();
