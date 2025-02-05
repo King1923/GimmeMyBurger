@@ -66,6 +66,9 @@ const ClientNavbar = () => {
           <Link to="/rewards" style={{ textDecoration: 'none', color: 'orange', marginRight: '15px' }}>
             <Typography>Rewards</Typography>
           </Link>
+          <Link to="/storelocator" style={{ textDecoration: 'none', color: 'orange', marginRight: '15px' }}>
+            <Typography>Store Locator</Typography>
+          </Link>
           
           {/* Conditionally render the profile link only if user exists */}
           {user && (

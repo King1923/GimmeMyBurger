@@ -24,6 +24,7 @@ import AdminPromotions from './pages/Admin_Promotions';
 import Inventory from './pages/Admin_Inventory';
 import EditInventory from './pages/Admin_EditInventory';
 import AddInventory from './pages/Admin_AddInventory';
+import StoreLocator from './pages/StoreLocator';
 
 
 import Register from './pages/Register';
@@ -88,6 +89,7 @@ function App() {
               <Route path="/profile/:id" element={<ProfileInfo />} />
               <Route path="/editprofile/:id" element={<EditProfile />} /> {/* New route for editing profile */}
               <Route path="/reset-password/:id" element={<ResetPassword />} />
+              <Route path="/storelocator" element={<StoreLocator />} />
             </Routes>
           </Container>
         </ThemeProvider>

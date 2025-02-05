@@ -49,7 +49,7 @@ function EditPromotion() {
             data.description = data.description.trim();
             http.put(`/promotion/${id}`, data)
                 .then(() => {
-                    navigate("/homepage");
+                    navigate("/adminPromotions");
                 });
         }
     });
