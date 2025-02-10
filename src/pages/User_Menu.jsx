@@ -11,7 +11,11 @@ import {
     ListItem,
     ListItemButton,
     ListItemText,
-    Button
+    Button,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem
 } from '@mui/material';
 import { Search, Clear } from '@mui/icons-material';
 import http from '../http';
@@ -23,87 +27,85 @@ function UserMenu() {
     const [productList, setProductList] = useState([]);
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('All');
-    const [categories, setCategories] = useState([]); // Categories fetched from the database
+    const [categories, setCategories] = useState([]);
+    const [filter, setFilter] = useState('name-asc'); // State for sorting filter
 
     // Fetch categories from the API
     const getCategories = async () => {
         try {
             const res = await http.get('/category');
-            setCategories([{ categoryName: 'All' }, ...res.data]); // Add "All" category to the list
+            setCategories([{ categoryName: 'All' }, ...res.data]);
         } catch (error) {
             console.error('Error fetching categories:', error);
         }
     };
 
-    // Fetch products based on search and category
+    // Fetch products and ensure dateAdded is set
     const getProducts = async () => {
         try {
-            // Construct query params for API call
             const queryParams = [];
             if (category !== 'All') queryParams.push(`category=${encodeURIComponent(category)}`);
             if (search) queryParams.push(`search=${encodeURIComponent(search)}`);
-    
+
             const url = `/product${queryParams.length > 0 ? `?${queryParams.join('&')}` : ''}`;
             const res = await http.get(url);
-    
-            console.log("Fetched Products:", res.data);  // Debugging line
-            console.log("Selected Category:", category); // Debugging line
-    
-            // Find the matching category object
+
             const selectedCategoryObj = categories.find(
                 (cat) => cat.categoryName.toLowerCase().trim() === category.toLowerCase().trim()
             );
-    
-            if (!selectedCategoryObj && category !== "All") {
-                console.error("Selected category not found in category list.");
-                setProductList([]); // Avoid showing incorrect data
+
+            if (!selectedCategoryObj && category !== 'All') {
+                console.error('Selected category not found.');
+                setProductList([]);
                 return;
             }
-    
-            // Filter products by category ID (if backend does not handle this)
-            const filteredProducts = res.data.filter((product) =>
-                category === "All" || product.categoryId === selectedCategoryObj.categoryId
-            );
-    
-            console.log("Filtered Products:", filteredProducts);  // Debugging line
+
+            const filteredProducts = res.data
+                .filter((product) => category === 'All' || product.categoryId === selectedCategoryObj?.categoryId)
+                .map((product) => ({
+                    ...product,
+                    dateAdded: product.dateAdded ?? new Date().toISOString()
+                }));
+
             setProductList(filteredProducts);
         } catch (error) {
-            console.error("Error fetching products:", error);
+            console.error('Error fetching products:', error);
+        }
+    };
+
+    // Filtering logic
+    const applyFilter = (items, filter) => {
+        switch (filter) {
+            case 'name-asc':
+                return [...items].sort((a, b) => a.name.localeCompare(b.name));
+            case 'name-desc':
+                return [...items].sort((a, b) => b.name.localeCompare(a.name));
+            case 'price-asc':
+                return [...items].sort((a, b) => a.price - b.price);
+            case 'price-desc':
+                return [...items].sort((a, b) => b.price - a.price);
+            case 'newest':
+                return [...items].sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
+            case 'oldest':
+                return [...items].sort((a, b) => new Date(a.dateAdded) - new Date(b.dateAdded));
+            default:
+                return items;
         }
     };
 
     const handleCategoryClick = (selectedCategory) => {
         setCategory(selectedCategory);
-        setSearch(''); // Clear search when category is changed
+        setSearch('');
     };
 
     useEffect(() => {
-        getCategories(); // Fetch categories on mount
-        getProducts(); // Fetch products on mount
+        getCategories();
+        getProducts();
     }, []);
 
     useEffect(() => {
-        getProducts(); // Trigger fetching products when category or search changes
+        getProducts();
     }, [category, search]);
-
-    const onSearchChange = (e) => {
-        setSearch(e.target.value);
-    };
-
-    const onSearchKeyDown = (e) => {
-        if (e.key === 'Enter') {
-            getProducts();
-        }
-    };
-
-    const onClickSearch = () => {
-        getProducts();
-    };
-
-    const onClickClear = () => {
-        setSearch('');
-        getProducts();
-    };
 
     return (
         <Box>
@@ -113,7 +115,7 @@ function UserMenu() {
             </Typography>
 
             <Box sx={{ display: 'flex', mb: 2 }}>
-                {/* Category Legend */}
+                {/* Category List */}
                 <Box sx={{ width: '20%', pr: 2 }}>
                     <Typography variant="h6" sx={{ mb: 1 }}>
                         Categories
@@ -134,27 +136,46 @@ function UserMenu() {
 
                 {/* Product List */}
                 <Box sx={{ flex: 1 }}>
+                    {/* Search Bar */}
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, justifyContent: 'center' }}>
                         <Input
                             value={search}
                             placeholder="Search for products..."
-                            onChange={onSearchChange}
-                            onKeyDown={onSearchKeyDown}
+                            onChange={(e) => setSearch(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && getProducts()}
                         />
-                        <IconButton color="primary" onClick={onClickSearch}>
+                        <IconButton color="primary" onClick={getProducts}>
                             <Search />
                         </IconButton>
-                        <IconButton color="primary" onClick={onClickClear}>
+                        <IconButton color="primary" onClick={() => { setSearch(''); getProducts(); }}>
                             <Clear />
                         </IconButton>
                     </Box>
 
+                    {/* Sorting Dropdown */}
+                    <FormControl fullWidth sx={{ mb: 3 }}>
+                        <InputLabel>Sort By</InputLabel>
+                        <Select
+                            value={filter}
+                            label="Sort By"
+                            onChange={(e) => setFilter(e.target.value)}
+                        >
+                            <MenuItem value="name-asc">Name: A-Z</MenuItem>
+                            <MenuItem value="name-desc">Name: Z-A</MenuItem>
+                            <MenuItem value="price-asc">Price: Low to High</MenuItem>
+                            <MenuItem value="price-desc">Price: High to Low</MenuItem>
+                            <MenuItem value="newest">Newest Added</MenuItem>
+                            <MenuItem value="oldest">Oldest Added</MenuItem>
+                        </Select>
+                    </FormControl>
+
+                    {/* Render Products */}
                     <Grid container spacing={2}>
-                        {productList.map((product) => (
+                        {applyFilter(productList, filter).map((product) => (
                             <Grid item xs={12} md={6} lg={4} key={product.id}>
                                 <Card>
                                     {product.imageFile && (
-                                        <Box className="aspect-ratio-container" sx={{ textAlign: 'center' }}>
+                                        <Box sx={{ textAlign: 'center' }}>
                                             <img
                                                 alt={product.name}
                                                 src={`${import.meta.env.VITE_FILE_BASE_URL}${product.imageFile}`}
@@ -175,8 +196,6 @@ function UserMenu() {
                                         <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', textAlign: 'center', mb: 2 }}>
                                             {product.description}
                                         </Typography>
-                                        
-                                        {/* Add to Cart Button */}
                                         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                                             <Link to={`/product/${product.productId}`} style={{ textDecoration: 'none' }}>
                                                 <Button variant="contained" color="primary">

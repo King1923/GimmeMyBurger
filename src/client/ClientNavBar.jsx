@@ -1,6 +1,7 @@
-import { AppBar, Toolbar, Typography, Box, Button, Container } from '@mui/material';
+import { AppBar, Toolbar, Typography, Box, Button, Container, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
+import { ShoppingCartOutlined } from '@mui/icons-material'; // Import Cart Icon
 import UserContext from '../contexts/UserContext';
 import http from '../http'; // Ensure you import http if you're using it in useEffect
 
@@ -60,23 +61,28 @@ const ClientNavbar = () => {
           <Link to="/menu" style={{ textDecoration: 'none', color: 'orange', marginRight: '15px' }}>
             <Typography>Menu</Typography>
           </Link>
-          <Link to="/cart" style={{ textDecoration: 'none', color: 'orange', marginRight: '15px' }}>
-            <Typography>Cart</Typography>
-          </Link>
           <Link to="/rewards" style={{ textDecoration: 'none', color: 'orange', marginRight: '15px' }}>
             <Typography>Rewards</Typography>
           </Link>
           <Link to="/storelocator" style={{ textDecoration: 'none', color: 'orange', marginRight: '15px' }}>
             <Typography>Store Locator</Typography>
           </Link>
+
+           {/* Cart Icon beside Register */}
+           <Link to="/cart">
+                <IconButton sx={{ color: 'orange' }}>
+                  <ShoppingCartOutlined />
+                </IconButton>
+              </Link>
           
+
           {/* Conditionally render the profile link only if user exists */}
           {user && (
             <Link to={`/profile/${user.id}`} style={{ textDecoration: 'none', color: 'orange', marginRight: '15px' }}>
               <Typography>Profile</Typography>
             </Link>
           )}
-          
+
           <Box sx={{ flexGrow: 1 }}></Box>
 
           {/* User Actions */}
@@ -89,9 +95,11 @@ const ClientNavbar = () => {
             </>
           ) : (
             <>
+              
               <Link to="/register" style={{ textDecoration: 'none', color: 'inherit', marginRight: '15px' }}>
                 <Typography>Register</Typography>
               </Link>
+
               <Link to="/login" style={{ textDecoration: 'none', color: 'inherit' }}>
                 <Typography>Login</Typography>
               </Link>

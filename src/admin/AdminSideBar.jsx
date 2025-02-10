@@ -171,6 +171,28 @@ const AdminSidebar = () => {
             >
               <ListItemText primary="Logout" />
             </ListItem>
+
+            <ListItem
+  button
+  component={NavLink}
+  to="/menu"
+  sx={{
+    justifyContent: 'center',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: '1.1rem',
+    color: 'inherit',
+    '&.active': {
+      color: 'white',
+      backgroundColor: 'green',
+    },
+    '&:hover': {
+      backgroundColor: 'yellow',
+    },
+  }}
+>
+  <ListItemText primary="Menu" />
+</ListItem>
           </>
         ) : (
           <>

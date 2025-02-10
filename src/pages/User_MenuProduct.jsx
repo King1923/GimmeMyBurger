@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Typography, Card, CardContent, Button, Grid } from '@mui/material';
+import React, { useEffect, useState, useContext } from 'react';
+import { Box, Typography, Card, CardContent, Button, Grid, Snackbar, Alert } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import http from '../http';
 import ClientNavbar from '../client/ClientNavBar';
 import ClientFooter from '../client/ClientFooter';
+import UserContext from '../contexts/UserContext';
 
 function MenuProduct() {
     const { productId } = useParams(); // Get product ID from the URL
@@ -49,21 +50,19 @@ function MenuProduct() {
     // Function to add product to cart
     const handleAddToCart = async () => {
         if (!user) {
-            alert('Please log in to add items to the cart.');
+            alert("Please log in to add items to the cart.");
             return;
         }
-
+    
         try {
-            await http.post('/cart', {
+            const response = await http.post("/cart", {
                 productId: product.productId,
-                userId: user.id, // Assuming user ID is available in context
                 quantity: 1, // Default quantity as 1
-                totalAmount: product.price
             });
-
+    
             setOpenSnackbar(true); // Show success message
         } catch (error) {
-            console.error('Error adding product to cart:', error);
+            console.error("Error adding product to cart:", error);
         }
     };
 
