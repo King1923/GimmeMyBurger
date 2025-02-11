@@ -15,6 +15,7 @@ import Orders from './pages/Admin_Orders';
 import MyForm from './pages/MyForm';
 import UserMenu from './pages/User_Menu';
 import UserCart from './pages/User_Cart';
+import UserPayment from './pages/User_Payment';
 import http from './http';
 import UserContext from './contexts/UserContext';
 import MenuProduct from './pages/User_MenuProduct'; // MenuProduct is for displaying product details
@@ -65,6 +66,7 @@ function App() {
               <Route path="/" element={<Login />} />
               <Route path={"/menu"} element={<UserMenu />} />
               <Route path={"/cart"} element={<UserCart />} />
+              <Route path="/payment" element={<UserPayment />} /> {/* Added the payment route */}
               <Route path={"/products"} element={<Products />} />
               <Route path='/promotions' element={<Promotions />} />
               <Route path={"/addproduct"} element={<AddProduct />} />

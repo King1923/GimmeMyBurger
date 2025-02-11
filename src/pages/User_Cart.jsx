@@ -5,6 +5,7 @@ import {
     Select, MenuItem 
 } from "@mui/material";
 import { Delete, ExpandMore, ExpandLess, Add, Remove } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom'; 
 import http from '../http';
 import UserContext from '../contexts/UserContext';
 import ClientNavbar from '../client/ClientNavBar';
@@ -20,6 +21,7 @@ function UserCart() {
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [expandedItems, setExpandedItems] = useState({});
     const [filter, setFilter] = useState("name-asc"); // Filter state
+    const navigate = useNavigate(); // Initialize navigation
 
     useEffect(() => {
         if (user) {
@@ -39,7 +41,7 @@ function UserCart() {
                 totalAmount: item.totalAmount ?? ((item.quantity ?? 1) * (item.price ?? 0)),
                 category: item.category?.categoryName ?? "Unknown", 
                 imageFile: item.imageFile ?? "",
-                dateAdded: item.dateAdded ?? new Date().toISOString()  // Ensure dateAdded is set
+                dateAdded: item.dateAdded ?? new Date().toISOString()
             }));
 
             setCartItems(updatedItems);
@@ -234,6 +236,7 @@ function UserCart() {
                         color="primary" 
                         fullWidth 
                         sx={{ mt: 2 }}
+                        onClick={() => navigate('/payment', { state: { cartItems, totalPrice: totalWithGST } })}  // Pass cart data
                     >
                         Proceed to Checkout
                     </Button>
