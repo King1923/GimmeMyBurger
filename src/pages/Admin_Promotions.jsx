@@ -1,6 +1,15 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Typography, Card, CardContent, Input, IconButton, Button } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Input,
+  IconButton,
+  Button,
+  Grid,
+} from '@mui/material';
 import { AccessTime, Search, Clear, Edit, Add } from '@mui/icons-material';
 import http from '../http';
 import dayjs from 'dayjs';
@@ -18,7 +27,8 @@ function AdminPromotions() {
   };
 
   const getPromotions = () => {
-    http.get('/promotion')
+    http
+      .get('/promotion')
       .then((res) => {
         if (Array.isArray(res.data)) {
           setPromotionList(res.data);
@@ -42,7 +52,7 @@ function AdminPromotions() {
   }, []);
 
   const onSearchKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       searchPromotions();
     }
   };
@@ -96,59 +106,69 @@ function AdminPromotions() {
           </Link>
         </Box>
 
-        {/* Promotions List */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {promotionList.length > 0 ? (
-            promotionList.map((promotion) => (
-              <Card key={promotion.id} sx={{ width: '100%' }}>
-                {promotion.imageFile && (
-                  <Box
-                    sx={{
-                      width: '100%',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      backgroundColor: '#e0e0e0',
-                      aspectRatio: '1',
-                    }}
-                  >
-                    <img
-                      alt="promotion"
-                      src={`${import.meta.env.VITE_FILE_BASE_URL}${promotion.imageFile}`}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        position: 'absolute',
-                      }}
-                    />
-                  </Box>
-                )}
-                <CardContent>
-                  <Box sx={{ display: 'flex', mb: 1 }}>
-                    <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                      {promotion.title}
-                    </Typography>
-                    <Link to={`/editpromotion/${promotion.id}`}>
-                      <IconButton color="primary" sx={{ padding: '4px' }}>
-                        <Edit />
-                      </IconButton>
-                    </Link>
-                  </Box>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
-                    <AccessTime sx={{ mr: 1 }} />
-                    <Typography>
-                      {dayjs(promotion.createdAt).format(global.datetimeFormat)}
-                    </Typography>
-                  </Box>
-                  <Typography sx={{ whiteSpace: 'pre-wrap' }}>
-                    {promotion.description}
-                  </Typography>
-                </CardContent>
-              </Card>
-            ))
-          ) : (
-            <Typography>No promotions available.</Typography>
-          )}
+        {/* Promotions List as a grid */}
+        <Box sx={{ flexGrow: 1 }}>
+          <Grid container spacing={2}>
+            {promotionList.length > 0 ? (
+              promotionList.map((promotion) => (
+                <Grid item xs={12} sm={6} md={4} key={promotion.id}>
+                  <Card sx={{ width: '100%' }}>
+                    {promotion.imageFile && (
+                      <Box
+                        sx={{
+                          width: '100%',
+                          position: 'relative',
+                          overflow: 'hidden',
+                          backgroundColor: '#e0e0e0',
+                          // Adjust aspect ratio for a smaller image display
+                          aspectRatio: '16/9',
+                        }}
+                      >
+                        <img
+                          alt="promotion"
+                          src={`${import.meta.env.VITE_FILE_BASE_URL}${promotion.imageFile}`}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            position: 'absolute',
+                          }}
+                        />
+                      </Box>
+                    )}
+                    <CardContent>
+                      <Box sx={{ display: 'flex', mb: 1 }}>
+                        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                          {promotion.title}
+                        </Typography>
+                        <Link to={`/editpromotion/${promotion.id}`}>
+                          <IconButton color="primary" sx={{ padding: '4px' }}>
+                            <Edit />
+                          </IconButton>
+                        </Link>
+                      </Box>
+                      <Box
+                        sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
+                        color="text.secondary"
+                      >
+                        <AccessTime sx={{ mr: 1 }} />
+                        <Typography>
+                          {dayjs(promotion.createdAt).format(global.datetimeFormat)}
+                        </Typography>
+                      </Box>
+                      <Typography sx={{ whiteSpace: 'pre-wrap' }}>
+                        {promotion.description}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))
+            ) : (
+              <Grid item xs={12}>
+                <Typography>No promotions available.</Typography>
+              </Grid>
+            )}
+          </Grid>
         </Box>
       </Box>
     </Box>

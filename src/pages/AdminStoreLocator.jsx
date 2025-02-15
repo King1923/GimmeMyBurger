@@ -131,7 +131,7 @@ function AdminStoreLocator() {
       {/* Main Content */}
       <Box sx={{ flexGrow: 1, padding: 3 }}>
         <Typography variant="h4" align="center" sx={{ mb: 2 }}>
-          Admin: Manage Store Locations
+          Manage Store Locations
         </Typography>
 
         {/* Form for adding/updating markers */}
