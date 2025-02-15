@@ -6,9 +6,10 @@ const containerStyle = {
   height: '400px',
 };
 
+// Define the default center as Singapore
 const center = {
-  lat: 37.7749,  // Latitude of San Francisco
-  lng: -122.4194,  // Longitude of San Francisco
+  lat: 1.3521,  // Singapore's latitude
+  lng: 103.8198,  // Singapore's longitude
 };
 
 const GoogleMapComponent = () => {

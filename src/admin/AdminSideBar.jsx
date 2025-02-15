@@ -147,6 +147,28 @@ const AdminSidebar = () => {
           <ListItemText primary="Inventory" />
         </ListItem>
 
+        <ListItem
+          button
+          component={NavLink}
+          to="/adminStoreLocator"
+          sx={{
+            justifyContent: 'center',
+            textAlign: 'center',
+            fontWeight: 'bold',
+            fontSize: '1.1rem',
+            color: 'inherit',
+            '&.active': {
+              color: 'white',
+              backgroundColor: 'green',
+            },
+            '&:hover': {
+              backgroundColor: 'yellow',
+            },
+          }}
+        >
+          <ListItemText primary="Store Locator" />
+        </ListItem>
+
         {user ? (
           <>
             {/* Account Name */}
