@@ -13,7 +13,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
 import { toast } from 'react-toastify';
-import ClientNavbar from '../client/ClientNavBar';
+import ClientNavbar from '../client/ClientNavbar';
 
 // Define validation schema using Yup (password field removed)
 const validationSchema = yup.object({

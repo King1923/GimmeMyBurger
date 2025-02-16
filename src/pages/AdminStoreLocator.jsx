@@ -1,6 +1,6 @@
 // AdminStoreLocator.jsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -16,8 +16,8 @@ import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AdminSidebar from '../admin/AdminSideBar';
+import http from '../http'; // your configured HTTP client (e.g., axios)
 
-// Map container style and default center (Singapore)
 const containerStyle = {
   width: '100%',
   height: '400px',
@@ -28,7 +28,7 @@ const defaultCenter = {
   lng: 103.8198, // Singapore's longitude
 };
 
-// A Google Map component that accepts markers and a click handler for editing
+// Google Map component for admin view
 const AdminGoogleMap = ({ markers, onMarkerClick }) => {
   return (
     <LoadScript googleMapsApiKey="AIzaSyBNxX3ljGhriIMNevt02quEXGO6fhIqhls">
@@ -36,9 +36,9 @@ const AdminGoogleMap = ({ markers, onMarkerClick }) => {
         {markers.map((marker) => (
           <Marker
             key={marker.id}
-            position={{ lat: marker.lat, lng: marker.lng }}
+            position={{ lat: marker.latitude, lng: marker.longitude }}
+            title={marker.name}
             onClick={() => onMarkerClick(marker)}
-            title={marker.name} // Shows the marker name as a tooltip
           />
         ))}
       </GoogleMap>
@@ -47,7 +47,6 @@ const AdminGoogleMap = ({ markers, onMarkerClick }) => {
 };
 
 function AdminStoreLocator() {
-  // State to manage markers and form values
   const [markers, setMarkers] = useState([]);
   const [name, setName] = useState('');
   const [lat, setLat] = useState('');
@@ -55,66 +54,82 @@ function AdminStoreLocator() {
   const [error, setError] = useState('');
   const [editingMarkerId, setEditingMarkerId] = useState(null);
 
-  // Add a new marker or update an existing one
-  const handleAddOrUpdateMarker = () => {
-    const latNum = parseFloat(lat);
-    const lngNum = parseFloat(lng);
+  // Fetch markers from the API on mount
+  useEffect(() => {
+    fetchMarkers();
+  }, []);
 
-    // Validate marker name
+  const fetchMarkers = async () => {
+    try {
+      const res = await http.get('/api/Markers');
+      setMarkers(res.data);
+    } catch (err) {
+      console.error('Error fetching markers:', err);
+    }
+  };
+
+  const handleAddOrUpdateMarker = async () => {
+    const latitude = parseFloat(lat);
+    const longitude = parseFloat(lng);
+
     if (!name.trim()) {
-      setError('Please enter a name for the marker.');
+      setError('Please enter a marker name.');
       return;
     }
-
-    // Validate coordinates
-    if (isNaN(latNum) || isNaN(lngNum)) {
+    if (isNaN(latitude) || isNaN(longitude)) {
       setError('Please enter valid numbers for latitude and longitude.');
       return;
     }
-    if (latNum < -90 || latNum > 90 || lngNum < -180 || lngNum > 180) {
+    if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
       setError('Coordinates are out of valid range.');
       return;
     }
 
-    if (editingMarkerId) {
-      // Update the marker being edited
-      setMarkers((prevMarkers) =>
-        prevMarkers.map((marker) =>
-          marker.id === editingMarkerId ? { ...marker, name, lat: latNum, lng: lngNum } : marker
-        )
-      );
-      setEditingMarkerId(null);
-    } else {
-      // Add a new marker (using Date.now() as a simple unique ID)
-      const newMarker = { id: Date.now(), name, lat: latNum, lng: lngNum };
-      setMarkers((prev) => [...prev, newMarker]);
-    }
-
-    // Reset the form
-    setName('');
-    setLat('');
-    setLng('');
-    setError('');
-  };
-
-  // Delete a marker
-  const handleDeleteMarker = (id) => {
-    setMarkers((prevMarkers) => prevMarkers.filter((marker) => marker.id !== id));
-    if (editingMarkerId === id) {
-      handleCancelEdit();
+    try {
+      if (editingMarkerId) {
+        // Update an existing marker via PUT
+        const updatedMarker = { id: editingMarkerId, name, latitude, longitude };
+        await http.put(`/api/Markers/${editingMarkerId}`, updatedMarker);
+        setMarkers((prev) =>
+          prev.map((marker) => (marker.id === editingMarkerId ? updatedMarker : marker))
+        );
+        setEditingMarkerId(null);
+      } else {
+        // Add a new marker via POST
+        const newMarker = { name, latitude, longitude };
+        const res = await http.post('/api/Markers', newMarker);
+        setMarkers((prev) => [...prev, res.data]);
+      }
+      setName('');
+      setLat('');
+      setLng('');
+      setError('');
+    } catch (err) {
+      console.error('Error saving marker:', err);
+      setError('Error saving marker.');
     }
   };
 
-  // Populate the form with marker data for editing
+  const handleDeleteMarker = async (id) => {
+    try {
+      await http.delete(`/api/Markers/${id}`);
+      setMarkers((prev) => prev.filter((marker) => marker.id !== id));
+      if (editingMarkerId === id) {
+        handleCancelEdit();
+      }
+    } catch (err) {
+      console.error('Error deleting marker:', err);
+    }
+  };
+
   const handleEditMarker = (marker) => {
     setEditingMarkerId(marker.id);
     setName(marker.name);
-    setLat(marker.lat.toString());
-    setLng(marker.lng.toString());
+    setLat(marker.latitude.toString());
+    setLng(marker.longitude.toString());
     setError('');
   };
 
-  // Cancel edit mode and clear the form
   const handleCancelEdit = () => {
     setEditingMarkerId(null);
     setName('');
@@ -131,7 +146,7 @@ function AdminStoreLocator() {
       {/* Main Content */}
       <Box sx={{ flexGrow: 1, padding: 3 }}>
         <Typography variant="h4" align="center" sx={{ mb: 2 }}>
-          Manage Store Locations
+          Admin: Manage Store Locations
         </Typography>
 
         {/* Form for adding/updating markers */}
@@ -184,7 +199,7 @@ function AdminStoreLocator() {
         {/* Google Map displaying markers */}
         <AdminGoogleMap markers={markers} onMarkerClick={handleEditMarker} />
 
-        {/* List of markers with edit and delete options */}
+        {/* Markers List */}
         <Typography variant="h5" align="center" sx={{ mt: 3, mb: 1 }}>
           Markers List
         </Typography>
@@ -194,25 +209,17 @@ function AdminStoreLocator() {
               key={marker.id}
               secondaryAction={
                 <>
-                  <IconButton
-                    edge="end"
-                    aria-label="edit"
-                    onClick={() => handleEditMarker(marker)}
-                  >
+                  <IconButton edge="end" onClick={() => handleEditMarker(marker)}>
                     <EditIcon />
                   </IconButton>
-                  <IconButton
-                    edge="end"
-                    aria-label="delete"
-                    onClick={() => handleDeleteMarker(marker.id)}
-                  >
+                  <IconButton edge="end" onClick={() => handleDeleteMarker(marker.id)}>
                     <DeleteIcon />
                   </IconButton>
                 </>
               }
             >
               <ListItemText
-                primary={`${marker.name}: Latitude: ${marker.lat}, Longitude: ${marker.lng}`}
+                primary={`${marker.name} — Lat: ${marker.latitude}, Lng: ${marker.longitude}`}
               />
             </ListItem>
           ))}
@@ -223,4 +230,3 @@ function AdminStoreLocator() {
 }
 
 export default AdminStoreLocator;
-

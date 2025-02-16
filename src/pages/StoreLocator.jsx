@@ -1,26 +1,28 @@
-// StoreLocator.jsx
-
 import React, { useState, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
-import GoogleMapComponent from './GoogleMap'; // Ensure this component uses `defaultCenter` if provided
+import GoogleMapComponent from './GoogleMap';
 import ClientNavbar from '../client/ClientNavbar';
 import ClientFooter from '../client/ClientFooter';
+import http from '../http';
 
-// Define the default center as Singapore
 const defaultCenter = {
-  lat: 1.3521,  // Singapore's latitude
-  lng: 103.8198,  // Singapore's longitude
+  lat: 1.3521,
+  lng: 103.8198,
 };
 
 function StoreLocator() {
   const [markers, setMarkers] = useState([]);
 
-  // On mount, load the markers from localStorage (persisted by AdminStoreLocator)
   useEffect(() => {
-    const storedMarkers = localStorage.getItem('markers');
-    if (storedMarkers) {
-      setMarkers(JSON.parse(storedMarkers));
-    }
+    const fetchMarkers = async () => {
+      try {
+        const res = await http.get('/api/Markers');
+        setMarkers(res.data);
+      } catch (err) {
+        console.error('Error fetching markers:', err);
+      }
+    };
+    fetchMarkers();
   }, []);
 
   return (

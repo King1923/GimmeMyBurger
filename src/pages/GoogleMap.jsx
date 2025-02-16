@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
 const containerStyle = {
@@ -6,22 +6,17 @@ const containerStyle = {
   height: '400px',
 };
 
-// Define the default center as Singapore
-const center = {
-  lat: 1.3521,  // Singapore's latitude
-  lng: 103.8198,  // Singapore's longitude
-};
-
-const GoogleMapComponent = () => {
+const GoogleMapComponent = ({ markers = [], defaultCenter }) => {
   return (
     <LoadScript googleMapsApiKey="AIzaSyBNxX3ljGhriIMNevt02quEXGO6fhIqhls">
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={center}
-        zoom={10}
-      >
-        {/* Add a marker to the map */}
-        <Marker position={center} />
+      <GoogleMap mapContainerStyle={containerStyle} center={defaultCenter} zoom={10}>
+        {markers.map((marker) => (
+          <Marker
+            key={marker.id}
+            position={{ lat: marker.latitude, lng: marker.longitude }}
+            title={marker.name}
+          />
+        ))}
       </GoogleMap>
     </LoadScript>
   );
