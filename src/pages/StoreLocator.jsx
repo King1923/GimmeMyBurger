@@ -3,6 +3,7 @@ import { Box, Typography } from '@mui/material';
 import GoogleMapComponent from './GoogleMap';
 import ClientNavbar from '../client/ClientNavbar';
 import ClientFooter from '../client/ClientFooter';
+import { useNavigate } from 'react-router-dom';
 import http from '../http';
 
 const defaultCenter = {
@@ -12,8 +13,11 @@ const defaultCenter = {
 
 function StoreLocator() {
   const [markers, setMarkers] = useState([]);
+  const [currentLocation, setCurrentLocation] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    // Fetch markers from the API
     const fetchMarkers = async () => {
       try {
         const res = await http.get('/api/Markers');
@@ -23,6 +27,23 @@ function StoreLocator() {
       }
     };
     fetchMarkers();
+
+    // Get the user's current location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCurrentLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error('Error getting current location:', error);
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by this browser.');
+    }
   }, []);
 
   return (
@@ -35,7 +56,11 @@ function StoreLocator() {
         <Typography variant="h4" sx={{ mb: 2 }}>
           Locate Us
         </Typography>
-        <GoogleMapComponent markers={markers} defaultCenter={defaultCenter} />
+        <GoogleMapComponent
+          markers={markers}
+          defaultCenter={defaultCenter}
+          currentLocation={currentLocation}
+        />
       </Box>
 
       {/* Footer */}

@@ -6,10 +6,11 @@ const containerStyle = {
   height: '400px',
 };
 
-const GoogleMapComponent = ({ markers = [], defaultCenter }) => {
+const GoogleMapComponent = ({ markers = [], defaultCenter, currentLocation, onMarkerClick }) => {
   return (
     <LoadScript googleMapsApiKey="AIzaSyBNxX3ljGhriIMNevt02quEXGO6fhIqhls">
       <GoogleMap mapContainerStyle={containerStyle} center={defaultCenter} zoom={10}>
+        {/* Render each marker from the API */}
         {markers.map((marker) => (
           <Marker
             key={marker.id}
@@ -17,6 +18,17 @@ const GoogleMapComponent = ({ markers = [], defaultCenter }) => {
             title={marker.name}
           />
         ))}
+
+        {/* Render the user's current location */}
+        {currentLocation && (
+          <Marker
+            position={currentLocation}
+            title="Your Location"
+            icon={{
+              url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+            }}
+          />
+        )}
       </GoogleMap>
     </LoadScript>
   );
