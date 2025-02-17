@@ -66,7 +66,6 @@ function Promotions() {
   return (
     <>
       {/* Navbar */}
-      <ClientNavbar />
 
       {/* Main Content */}
       <Box sx={{ flexGrow: 1, padding: 3 }}>
@@ -133,7 +132,6 @@ function Promotions() {
       </Box>
 
       {/* Footer */}
-      <ClientFooter />
     </>
   );
 }

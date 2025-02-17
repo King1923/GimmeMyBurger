@@ -49,7 +49,6 @@ function StoreLocator() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       {/* Navbar */}
-      <ClientNavbar />
 
       {/* Main Content */}
       <Box sx={{ flexGrow: 1, padding: 3, textAlign: 'center' }}>
@@ -64,7 +63,6 @@ function StoreLocator() {
       </Box>
 
       {/* Footer */}
-      <ClientFooter />
     </Box>
   );
 }

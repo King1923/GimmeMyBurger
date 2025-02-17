@@ -5,7 +5,6 @@ import { AccountCircle, AccessTime, Search, Clear, Edit } from '@mui/icons-mater
 import http from '../http';
 import dayjs from 'dayjs';
 import UserContext from '../contexts/UserContext';
-import ClientNavbar from '../client/ClientNavbar';
 import global from '../global';
 
 function Rewards() {
@@ -50,7 +49,6 @@ function Rewards() {
 
     return (
         <Box>
-            <ClientNavbar/>
             <Typography variant="h5" sx={{ my: 2 }}>
                 Rewards
             </Typography>

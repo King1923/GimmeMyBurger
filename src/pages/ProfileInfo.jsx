@@ -4,11 +4,7 @@ import {
   Typography,
   Grid,
   CircularProgress,
-  Avatar,
   Divider,
-  Card,
-  CardContent,
-  CardHeader,
   Button,
   IconButton
 } from '@mui/material';
@@ -17,9 +13,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import http from '../http';
 import { toast } from 'react-toastify';
 import defaultProfile from '../assets/profile.webp';
-import ClientNavbar from '../client/ClientNavbar';
-
-
 
 function ProfileInfo() {
   const { id } = useParams();
@@ -44,116 +37,153 @@ function ProfileInfo() {
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
-        
         <CircularProgress /> 
       </Box>
-      
-      
     );
   }
 
   if (!user) {
     return (
-      <Typography variant="h6" align="center" sx={{ mt: 8 }}>
+      <Typography variant="h6" align="center" sx={{ mt: 8, color: '#fff' }}>
         User not found.
       </Typography>
     );
   }
 
   // Format dates for display:
-  // Date of Birth in local date format.
   const formattedDoB = new Date(user.doB).toLocaleDateString();
-  // Account Created formatted as YYYY-MM-DD (without time).
   const formattedCreatedAt = new Date(user.createdAt).toISOString().split('T')[0];
 
   return (
-    <Box sx={{ p: 2,mx: 'auto', mt: 4 }}>
-      <ClientNavbar/>
-      <Card elevation={3}>
-        <CardHeader
-          avatar={
-            <Avatar
-              sx={{ width: 56, height: 56 }}
-              src={defaultProfile}
-            />
-          }
-          title={
-            <Typography variant="h5" component="div">
-              {user.fName} {user.lName}
-            </Typography>
-          }
-          subheader={user.email}
-          sx={{ backgroundColor: 'orange' }}
-        />
-        <Divider />
-        <CardContent>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2" color="textSecondary">
-                Mobile
-              </Typography>
-              <Typography variant="body1">{user.mobile}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2" color="textSecondary">
-                Delivery Address
-              </Typography>
-              <Typography variant="body1">{user.deliveryAddress}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2" color="textSecondary">
-                Date of Birth
-              </Typography>
-              <Typography variant="body1">{formattedDoB}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2" color="textSecondary">
-                Postal Code
-              </Typography>
-              <Typography variant="body1">{user.postalCode}</Typography>
-            </Grid>
-            {/* Points Earned with Burger Icon */}
-            <Grid item xs={12} sm={6}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography variant="subtitle2" color="textSecondary">
-                    Points Earned
-                  </Typography>
-                  <Typography variant="body1">{user.pointsEarned}</Typography>
-                </Box>
-                <IconButton>
-                  <MenuIcon />
-                </IconButton>
-              </Box>
-            </Grid>
-            {/* Account Created without time */}
-            <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2" color="textSecondary">
-                Account Created
-              </Typography>
-              <Typography variant="body1">{formattedCreatedAt}</Typography>
-            </Grid>
-          </Grid>
-          {/* Action Buttons */}
-          <Box sx={{ mt: 3, textAlign: 'center' }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => navigate(`/editprofile/${user.id}`)}
-              sx={{ mr: 2 }}
+    <Box sx={{ minHeight: '100vh', p: 4 }}>
+      <Grid container spacing={4}>
+        {/* LEFT SIDEBAR */}
+        <Grid item xs={12} md={3}>
+          <Typography variant="h6" sx={{ mb: 3 }}>
+            ACCOUNT
+          </Typography>
+          <Box sx={{ ml: 2 }}>
+            <Typography 
+              sx={{ mb: 2, cursor: 'pointer', fontWeight: 'bold' }} 
+              onClick={() => navigate(`/profile/${user.id}`)}
             >
-              Edit Profile
-            </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => navigate(`/reset-password/${user.id}`)}
+              Profile
+            </Typography>
+            <Typography 
+              sx={{ mb: 2, cursor: 'pointer' }} 
+              onClick={() => navigate('/addresses')}
+            >
+              Addresses
+            </Typography>
+            <Typography 
+              sx={{ mb: 2, cursor: 'pointer' }} 
+              onClick={() => navigate(`/change-password/${user.id}`)}
             >
               Reset Password
-            </Button>
+            </Typography>
+            <Typography 
+              sx={{ mb: 2, cursor: 'pointer' }} 
+              onClick={() => navigate('/delete-account')}
+            >
+              Delete Account
+            </Typography>
           </Box>
-        </CardContent>
-      </Card>
+        </Grid>
+
+        {/* MAIN CONTENT AREA */}
+        <Grid item xs={12} md={9}>
+          <Typography variant="h4" sx={{ mb: 2 }}>
+            PROFILE
+          </Typography>
+          <Box sx={{ p: 2 }}>
+            {/* Combined User Info and Details */}
+            <Grid container spacing={2}>
+              {/* Name & Email */}
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" sx={{ color: '#aaa' }}>
+                  NAME
+                </Typography>
+                <Typography variant="body1">
+                  {user.fName} {user.lName}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" sx={{ color: '#aaa' }}>
+                  EMAIL
+                </Typography>
+                <Typography variant="body1">
+                  {user.email}
+                </Typography>
+              </Grid>
+              {/* Mobile */}
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" sx={{ color: '#aaa' }}>
+                  MOBILE NUMBER
+                </Typography>
+                <Typography variant="body1">{user.mobile}</Typography>
+              </Grid>
+              {/* Delivery Address */}
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" sx={{ color: '#aaa' }}>
+                  DELIVERY ADDRESS
+                </Typography>
+                <Typography variant="body1">{user.deliveryAddress}</Typography>
+              </Grid>
+              {/* Date of Birth */}
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" sx={{ color: '#aaa' }}>
+                  DATE OF BIRTH
+                </Typography>
+                <Typography variant="body1">{formattedDoB}</Typography>
+              </Grid>
+              {/* Postal Code */}
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" sx={{ color: '#aaa' }}>
+                  POSTAL CODE
+                </Typography>
+                <Typography variant="body1">{user.postalCode}</Typography>
+              </Grid>
+              {/* Points Earned */}
+              <Grid item xs={12}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ color: '#aaa' }}>
+                      POINTS EARNED
+                    </Typography>
+                    <Typography variant="body1">{user.pointsEarned}</Typography>
+                  </Box>
+                  <IconButton>
+                    <MenuIcon sx={{ color: '#fff' }} />
+                  </IconButton>
+                </Box>
+              </Grid>
+              {/* Account Created */}
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" sx={{ color: '#aaa' }}>
+                  Account Created
+                </Typography>
+                <Typography variant="body1">{formattedCreatedAt}</Typography>
+              </Grid>
+            </Grid>
+            <Divider sx={{ my: 3, borderColor: '#444' }} />
+            {/* Action Buttons */}
+            <Box sx={{ mt: 3, textAlign: 'center' }}>
+              <Button
+                variant="contained"
+                onClick={() => navigate(`/editprofile/${user.id}`)}
+                sx={{ 
+                  mr: 2,
+                  backgroundColor: 'orange',
+                  color: 'white',
+                  '&:hover': { backgroundColor: 'darkorange' }
+                }}
+              >
+                Edit Profile
+              </Button>
+            </Box>
+          </Box>
+        </Grid>
+      </Grid>
     </Box>
   );
 }

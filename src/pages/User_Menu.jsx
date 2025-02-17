@@ -106,7 +106,6 @@ function UserMenu() {
 
     return (
         <Box>
-            <ClientNavbar />
             <Typography variant="h5" sx={{ my: 2, textAlign: 'center' }}>
                 Gimme My Burger Menu
             </Typography>
@@ -191,7 +190,6 @@ function UserMenu() {
                 </Box>
             </Box>
 
-            <ClientFooter />
         </Box>
     );
 }

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography, Card, CardContent, Button, Grid } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import http from '../http';
-import ClientNavbar from '../client/ClientNavBar';
 import ClientFooter from '../client/ClientFooter';
 
 function MenuProduct() {
@@ -77,7 +76,6 @@ function MenuProduct() {
 
     return (
         <Box>
-            <ClientNavbar />
             <Box sx={{ my: 4, px: 2, maxWidth: 800, mx: 'auto' }}>
                 <Button onClick={() => navigate('/menu')} variant="contained" sx={{ mb: 2 }}>
                     Back

@@ -3,7 +3,6 @@ import { Box, Typography, Grid, Card, CardContent, IconButton, Button } from '@m
 import { Delete } from '@mui/icons-material';
 import http from '../http';
 import UserContext from '../contexts/UserContext';
-import ClientNavbar from '../client/ClientNavBar';
 import ClientFooter from '../client/ClientFooter';
 
 function UserCart() {
@@ -36,8 +35,7 @@ function UserCart() {
     }, []);
 
     return (
-        <Box>|
-            <ClientNavbar/>
+        <Box>
             <Typography variant="h5" sx={{ my: 2 }}>
                 Your Cart
             </Typography>
