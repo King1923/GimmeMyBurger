@@ -69,7 +69,7 @@ const ClientNavbar = () => {
           <Link to="/addreward" style={{ textDecoration: 'none', color: 'orange', marginRight: '30px' }}>
             <Typography>REWARDS</Typography>
           </Link>
-          <Link to="/rewards" style={{ textDecoration: 'none', color: 'orange', marginRight: '30px' }}>
+          <Link to="/storelocator" style={{ textDecoration: 'none', color: 'orange', marginRight: '30px' }}>
             <Typography>STORE LOCATOR</Typography>
           </Link>
           <Link to="/rewards" style={{ textDecoration: 'none', color: 'orange', marginRight: '30px' }}>

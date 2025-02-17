@@ -190,7 +190,6 @@ function UserMenu() {
                 </Box>
             </Box>
 
-            <ClientFooter />
         </Box>
     );
 }

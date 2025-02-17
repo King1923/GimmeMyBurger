@@ -225,7 +225,7 @@ const AdminSidebar = () => {
           <ListItem
             button
             component={NavLink}
-            to="/store-locator"
+            to="/adminstorelocator"
             sx={{
               justifyContent: 'flex-start',
               textAlign: 'left',
