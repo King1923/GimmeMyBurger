@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Typography, Card, CardContent, Input, IconButton, Button } from '@mui/material';
-import { AccountCircle, AccessTime, Search, Clear, Edit, Add } from '@mui/icons-material';
+import { Box, Typography, Grid, Card, CardContent, Input, IconButton, Button } from '@mui/material';
+import { AccessTime, Search, Clear } from '@mui/icons-material';
 import http from '../http';
 import dayjs from 'dayjs';
 import UserContext from '../contexts/UserContext';
 import global from '../global';
 
-// Import the navbar and footer components
+// Import Navbar and Footer
 import ClientNavbar from '../client/ClientNavbar';
 import ClientFooter from '../client/ClientFooter';
 
@@ -23,21 +23,20 @@ function Promotions() {
   const getPromotions = () => {
     http.get('/promotion')
       .then((res) => {
-        console.log('API Response:', res.data); // Check the structure of the response
+        console.log('API Response:', res.data);
         if (Array.isArray(res.data)) {
-          setPromotionList(res.data); // If it's an array, set it directly
+          setPromotionList(res.data);
         } else if (res.data && Array.isArray(res.data.promotions)) {
-          setPromotionList(res.data.promotions); // Handle nested arrays if needed
+          setPromotionList(res.data.promotions);
         } else {
-          setPromotionList([]); // Set an empty array if no valid data
+          setPromotionList([]);
         }
       })
       .catch((error) => {
         console.error('Error fetching promotions:', error);
-        setPromotionList([]); // Prevent errors if the API call fails
+        setPromotionList([]);
       });
   };
-  
 
   const searchPromotions = () => {
     http.get(`/promotion?search=${search}`).then((res) => {
@@ -66,30 +65,21 @@ function Promotions() {
 
   return (
     <>
-      {/* Render the Client Navbar at the top */}
+      {/* Navbar */}
       <ClientNavbar />
 
       {/* Main Content */}
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          // Adjust the minHeight if necessary to account for the navbar/footer heights
-          minHeight: 'calc(100vh - 96px - 64px)', 
-          px: 2,
-          py: 2,
-        }}
-      >
-        <Typography variant="h5" sx={{ my: 2 }}>
-          Home
+      <Box sx={{ flexGrow: 1, padding: 3 }}>
+        <Typography variant="h4" sx={{ textAlign: 'center', mb: 3 }}>
+          Promotions
         </Typography>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, width: '100%', maxWidth: '600px' }}>
+        {/* Search Bar */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 3 }}>
           <Input
-            fullWidth
+            sx={{ width: '50%' }}
             value={search}
-            placeholder="Search"
+            placeholder="Search promotions"
             onChange={onSearchChange}
             onKeyDown={onSearchKeyDown}
           />
@@ -101,63 +91,48 @@ function Promotions() {
           </IconButton>
         </Box>
 
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 2,
-            width: '100%',
-            maxWidth: '600px',
-          }}
-        >
+        {/* Promotions Grid */}
+        <Grid container spacing={2} justifyContent="center">
           {promotionList.map((promotion) => (
-            <Card key={promotion.id} sx={{ width: '100%' }}>
-              {promotion.imageFile && (
-                <Box
-                  sx={{
-                    width: '100%',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    backgroundColor: '#f5f5f5',
-                    aspectRatio: '1',
-                  }}
-                >
-                  <img
-                    alt="promotion"
-                    src={`${import.meta.env.VITE_FILE_BASE_URL}${promotion.imageFile}`}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                    }}
-                  />
-                </Box>
-              )}
-              <CardContent>
-                <Box sx={{ display: 'flex', mb: 1 }}>
-                  <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            <Grid item xs={12} sm={6} md={4} lg={3} key={promotion.id}>
+              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                {/* Promotion Image */}
+                {promotion.imageFile && (
+                  <Box sx={{ width: '100%', height: '150px', overflow: 'hidden', bgcolor: '#f5f5f5' }}>
+                    <img
+                      alt="promotion"
+                      src={`${import.meta.env.VITE_FILE_BASE_URL}${promotion.imageFile}`}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                      }}
+                    />
+                  </Box>
+                )}
+                
+                {/* Promotion Content */}
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 'bold' }}>
                     {promotion.title}
                   </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
-                  <AccessTime sx={{ mr: 1 }} />
-                  <Typography>
-                    {dayjs(promotion.createdAt).format(global.datetimeFormat)}
+                  <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, mb: 1, color: 'text.secondary' }}>
+                    <AccessTime sx={{ fontSize: '1rem', mr: 1 }} />
+                    <Typography sx={{ fontSize: '0.875rem' }}>
+                      {dayjs(promotion.createdAt).format(global.datetimeFormat)}
+                    </Typography>
+                  </Box>
+                  <Typography sx={{ fontSize: '0.875rem', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                    {promotion.description}
                   </Typography>
-                </Box>
-                <Typography sx={{ whiteSpace: 'pre-wrap' }}>
-                  {promotion.description}
-                </Typography>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </Grid>
           ))}
-        </Box>
+        </Grid>
       </Box>
 
-      {/* Render the Client Footer at the bottom */}
+      {/* Footer */}
       <ClientFooter />
     </>
   );
