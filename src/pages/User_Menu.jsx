@@ -15,7 +15,6 @@ import {
 } from '@mui/material';
 import { Search, Clear } from '@mui/icons-material';
 import http from '../http';
-import ClientNavbar from '../client/ClientNavBar';
 import ClientFooter from '../client/ClientFooter';
 import { Link } from 'react-router-dom'; // Make sure Link is imported
 
