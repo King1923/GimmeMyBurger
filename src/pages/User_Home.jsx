@@ -6,7 +6,6 @@ import http from '../http';
 import dayjs from 'dayjs';
 import UserContext from '../contexts/UserContext';
 import global from '../global';
-import ClientNavbar from '../client/ClientNavBar';
 import ClientFooter from '../client/ClientFooter';
 
 function Tutorials() {
@@ -51,7 +50,6 @@ function Tutorials() {
 
     return (
         <Box>
-            <ClientNavbar/>
             <Typography variant="h5" sx={{ my: 2 }}>
                Home
             </Typography>

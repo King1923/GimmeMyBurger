@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import http from '../http';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AdminSidebar from '../admin/AdminSideBar';
 
 function AddReward() {
     const navigate = useNavigate();
@@ -78,6 +79,7 @@ function AddReward() {
 
     return (
         <Box>
+        <AdminSidebar />
             <Typography variant="h5" sx={{ my: 2 }}>
                 Add Reward
             </Typography>

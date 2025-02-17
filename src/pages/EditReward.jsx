@@ -13,7 +13,6 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
 import { toast } from 'react-toastify';
-import ClientNavbar from '../client/ClientNavBar';
 
 // Define validation schema using Yup (password field removed)
 const validationSchema = yup.object({
@@ -95,7 +94,6 @@ function EditProfile() {
 
   return (
     <Box sx={{ p: 2, maxWidth: 800, mx: 'auto', mt: 4 }}>
-      <ClientNavbar/>
       <Paper sx={{ p: 3 }}>
         <Typography variant="h5" gutterBottom>
           Edit Profile

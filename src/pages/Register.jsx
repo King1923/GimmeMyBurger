@@ -7,7 +7,6 @@ import http from '../http';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import zxcvbn from 'zxcvbn';
-import ClientNavbar from '../client/ClientNavBar';
 
 const passwordStrengthText = [
   'Very Weak',
@@ -17,18 +16,17 @@ const passwordStrengthText = [
   'Very Strong'
 ];
 
-// Define the validation schema using Yup
 const validationSchema = yup.object({
   fname: yup.string().trim()
     .min(3, 'First name must be at least 3 characters')
     .max(50, 'First name must be at most 50 characters')
     .required('First name is required')
-    .matches(/^[a-zA-Z '-,.]+$/, "Only letters, spaces, and characters: ' - , . allowed"),
+    .matches(/^[A-Za-z]+$/, "Only letters are allowed in first name"),
   lname: yup.string().trim()
     .min(3, 'Last name must be at least 3 characters')
     .max(50, 'Last name must be at most 50 characters')
     .required('Last name is required')
-    .matches(/^[a-zA-Z '-,.]+$/, "Only letters, spaces, and characters: ' - , . allowed"),
+    .matches(/^[A-Za-z]+$/, "Only letters are allowed in last name"),
   email: yup.string().trim()
     .email('Enter a valid email')
     .max(50, 'Email must be at most 50 characters')
@@ -37,14 +35,25 @@ const validationSchema = yup.object({
     .min(8, 'Password must be at least 8 characters')
     .max(50, 'Password must be at most 50 characters')
     .required('Password is required')
-    .matches(/^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$/, 'Password must include at least 1 letter and 1 number'),
+    // Ensures at least one lowercase, one uppercase, one digit, and one special character.
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>\/?]).{8,}$/,
+             'Password must include at least one uppercase letter, one lowercase letter, one number, and one special character')
+    // Custom test using zxcvbn to ensure password strength
+    .test(
+      'password-strength',
+      'Password is too weak. Please choose a stronger password.',
+      value => {
+        if (!value) return false;
+        const { score } = zxcvbn(value);
+        return score >= 3; // Only allow if score is 3 (Strong) or 4 (Very Strong)
+      }
+    ),
   confirmPassword: yup.string().trim()
     .required('Confirm password is required')
     .oneOf([yup.ref('password')], 'Passwords must match'),
   mobile: yup.string().trim()
     .matches(/^[0-9]+$/, 'Mobile number must contain only digits')
-    .min(8, 'Mobile number must be at least 8 digits')
-    .max(8, 'Mobile number must be at most 8 digits')
+    .length(8, 'Mobile number must be exactly 8 digits')
     .required('Mobile number is required'),
   deliveryAddress: yup.string().trim()
     .max(100, 'Delivery address must be at most 100 characters')
@@ -85,12 +94,10 @@ function Register() {
       data.postalCode = data.postalCode.trim();
       data.mobile = data.mobile.trim();
       data.dob = new Date(data.dob).toISOString();
-      // No need to handle data.role since the default is set in the User class.
-
+      
       // Send the request to the backend
       http.post("/user/register", data)
         .then((res) => {
-          console.log(res.data);
           navigate("/login");
         })
         .catch((err) => {
@@ -122,12 +129,13 @@ function Register() {
   };
 
   return (
-    <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <ClientNavbar/>
+    <Box sx={{ marginTop: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Typography variant="h5" sx={{ my: 2 }}>Register</Typography>
       <Box component="form" sx={{ maxWidth: '500px' }} onSubmit={formik.handleSubmit}>
         <TextField
-          fullWidth margin="dense" autoComplete="off"
+          fullWidth
+          margin="dense"
+          autoComplete="off"
           label="First Name"
           name="fname"
           value={formik.values.fname}
@@ -137,7 +145,9 @@ function Register() {
           helperText={formik.touched.fname && formik.errors.fname}
         />
         <TextField
-          fullWidth margin="dense" autoComplete="off"
+          fullWidth
+          margin="dense"
+          autoComplete="off"
           label="Last Name"
           name="lname"
           value={formik.values.lname}
@@ -147,7 +157,9 @@ function Register() {
           helperText={formik.touched.lname && formik.errors.lname}
         />
         <TextField
-          fullWidth margin="dense" autoComplete="off"
+          fullWidth
+          margin="dense"
+          autoComplete="off"
           label="Email"
           name="email"
           value={formik.values.email}
@@ -157,16 +169,19 @@ function Register() {
           helperText={formik.touched.email && formik.errors.email}
         />
         <TextField
-          fullWidth margin="dense" autoComplete="off"
+          fullWidth
+          margin="dense"
+          autoComplete="off"
           label="Password"
-          name="password" type="password"
+          name="password"
+          type="password"
           value={formik.values.password}
           onChange={handlePasswordChange}
           onBlur={formik.handleBlur}
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
         />
-        {/* Conditionally render the Password Strength Meter */}
+        {/* Password Strength Meter */}
         {formik.values.password && (
           <Box sx={{ mt: 1, mb: 2 }}>
             <LinearProgress 
@@ -180,9 +195,12 @@ function Register() {
           </Box>
         )}
         <TextField
-          fullWidth margin="dense" autoComplete="off"
+          fullWidth
+          margin="dense"
+          autoComplete="off"
           label="Confirm Password"
-          name="confirmPassword" type="password"
+          name="confirmPassword"
+          type="password"
           value={formik.values.confirmPassword}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -190,7 +208,9 @@ function Register() {
           helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
         />
         <TextField
-          fullWidth margin="dense" autoComplete="off"
+          fullWidth
+          margin="dense"
+          autoComplete="off"
           label="Mobile"
           name="mobile"
           value={formik.values.mobile}
@@ -200,7 +220,9 @@ function Register() {
           helperText={formik.touched.mobile && formik.errors.mobile}
         />
         <TextField
-          fullWidth margin="dense" autoComplete="off"
+          fullWidth
+          margin="dense"
+          autoComplete="off"
           label="Delivery Address"
           name="deliveryAddress"
           value={formik.values.deliveryAddress}
@@ -210,7 +232,9 @@ function Register() {
           helperText={formik.touched.deliveryAddress && formik.errors.deliveryAddress}
         />
         <TextField
-          fullWidth margin="dense" autoComplete="off"
+          fullWidth
+          margin="dense"
+          autoComplete="off"
           label="Postal Code"
           name="postalCode"
           value={formik.values.postalCode}
@@ -220,7 +244,10 @@ function Register() {
           helperText={formik.touched.postalCode && formik.errors.postalCode}
         />
         <TextField
-          fullWidth margin="dense" autoComplete="off" type="date"
+          fullWidth
+          margin="dense"
+          autoComplete="off"
+          type="date"
           label="Date of Birth"
           name="dob"
           value={formik.values.dob}
@@ -232,7 +259,17 @@ function Register() {
             shrink: true,
           }}
         />
-        <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
+        <Button 
+          type="submit" 
+          variant="contained" 
+          fullWidth 
+          sx={{ 
+            mt: 2,
+            backgroundColor: 'orange',
+            color: 'white',
+            '&:hover': { backgroundColor: 'darkorange' }
+          }}
+        >
           Register
         </Button>
       </Box>
