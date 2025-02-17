@@ -40,6 +40,7 @@ import ChangePassword from './pages/ChangePassword';
 import DeleteAccount from './pages/DeleteAccount';
 import ClientFooter from './client/ClientFooter'; // Import your ClientFooter
 import ClientNavbar from './client/ClientNavbar';
+import NavigationPage from './pages/NavigationPage';
 
 // Helper component to wrap Routes and conditionally render Navbar and Footer.
 const AppRoutes = () => {
@@ -57,7 +58,7 @@ const AppRoutes = () => {
     "/order",
     "/addreward",
     "/form",
-    "/adminstorelocator",
+    "/adminStoreLocator",
     "/inventory",
     "/addinventory",
     "/editinventory",
@@ -99,6 +100,7 @@ const AppRoutes = () => {
 
           <Route path="/storelocator" element={<StoreLocator />} />
           <Route path="/adminstorelocator" element={<AdminStoreLocator />} />
+          <Route path="/navigation" element={<NavigationPage />} />
           <Route path="/addinventory" element={<AddInventory />} />
           <Route path="/editinventory/:id" element={<EditInventory />} />
           <Route path="/inventory" element={<Inventory />} />

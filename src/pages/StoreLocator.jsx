@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
 import GoogleMapComponent from './GoogleMap';
-import ClientNavbar from '../client/ClientNavbar';
-import ClientFooter from '../client/ClientFooter';
 import { useNavigate } from 'react-router-dom';
 import http from '../http';
 
@@ -46,10 +44,18 @@ function StoreLocator() {
     }
   }, []);
 
+  const handleMarkerClick = (marker) => {
+    // Navigate to the navigation page with destination and marker name in state
+    navigate('/navigation', {
+      state: {
+        destination: { lat: marker.latitude, lng: marker.longitude },
+        markerName: marker.name,
+      },
+    });
+  };
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      {/* Navbar */}
-
       {/* Main Content */}
       <Box sx={{ flexGrow: 1, padding: 3, textAlign: 'center' }}>
         <Typography variant="h4" sx={{ mb: 2 }}>
@@ -59,10 +65,9 @@ function StoreLocator() {
           markers={markers}
           defaultCenter={defaultCenter}
           currentLocation={currentLocation}
+          onMarkerClick={handleMarkerClick}
         />
       </Box>
-
-      {/* Footer */}
     </Box>
   );
 }
