@@ -153,13 +153,7 @@ function Promotions() {
                   <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 'bold' }}>
                     {promotion.title}
                   </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, mb: 1, color: 'text.secondary' }}>
-                    <AccessTime sx={{ fontSize: '1rem', mr: 1 }} />
-                    <Typography sx={{ fontSize: '0.875rem' }}>
-                      {dayjs(promotion.createdAt).format(global.datetimeFormat)}
-                    </Typography>
-                  </Box>
-                  <Typography sx={{ fontSize: '0.875rem', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                  <Typography sx={{ fontSize: '0.875rem', whiteSpace: 'normal' }}>
                     {promotion.description}
                   </Typography>
                 </CardContent>
@@ -181,7 +175,8 @@ function Promotions() {
           <Box sx={{
             position: 'absolute', top: '50%', left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 3, borderRadius: '10px', textAlign: 'center'
+            width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 3, borderRadius: '10px', textAlign: 'center',
+            maxHeight: '80vh', overflowY: 'auto' // Added scrolling for long descriptions
           }}>
             {selectedPromotion && (
               <>
@@ -195,7 +190,9 @@ function Promotions() {
                     style={{ width: '100%', borderRadius: '5px' }}
                   />
                 </Box>
-                <Typography sx={{ mb: 2 }}>{selectedPromotion.description}</Typography>
+                <Typography sx={{ mb: 2, whiteSpace: 'normal' }}>
+                  {selectedPromotion.description}
+                </Typography>
                 <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'red' }}>
                   Promo Code: {promoCode}
                 </Typography>

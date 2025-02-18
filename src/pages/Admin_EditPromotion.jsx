@@ -67,7 +67,7 @@ function EditPromotion() {
     const deletePromotion = () => {
         http.delete(`/promotion/${id}`)
             .then(() => {
-                navigate("/homepage");
+                navigate("/adminpromotions");
             });
     };
 

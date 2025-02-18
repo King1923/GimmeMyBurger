@@ -59,10 +59,12 @@ const AppRoutes = () => {
     "/addreward",
     "/form",
     "/adminstorelocator",
+    "/adminStoreLocator",
     "/inventory",
     "/addinventory",
     "/editinventory",
     "/editpromotion",
+    "/adminpromotions",
     "/adminPromotions",
     "/addpromotion"
   ];

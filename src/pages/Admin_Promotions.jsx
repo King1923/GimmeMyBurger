@@ -76,7 +76,6 @@ function AdminPromotions() {
         sx={{
           flexGrow: 1,
           padding: 3,
-          backgroundColor: '#f5f5f5',
         }}
       >
         <Typography variant="h4" sx={{ mb: 3 }}>
@@ -119,7 +118,6 @@ function AdminPromotions() {
                           width: '100%',
                           position: 'relative',
                           overflow: 'hidden',
-                          backgroundColor: '#e0e0e0',
                           // Adjust aspect ratio for a smaller image display
                           aspectRatio: '16/9',
                         }}
