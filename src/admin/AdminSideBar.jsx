@@ -22,6 +22,7 @@ import CategoryIcon from '@mui/icons-material/Category';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import StoreMallDirectoryIcon from '@mui/icons-material/StoreMallDirectory';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
 const AdminSidebar = () => {
   const { user } = useContext(UserContext);
@@ -237,6 +238,28 @@ const AdminSidebar = () => {
             </ListItemIcon>
             <ListItemText primary="Orders" />
           </ListItem>
+
+          <ListItem
+            button
+            component={NavLink}
+            to="/adminpromotions"
+            sx={{
+              justifyContent: 'flex-start',
+              textAlign: 'left',
+              pl: 2,
+              fontWeight: 'bold',
+              fontSize: '1.1rem',
+              color: 'inherit',
+              '&.active': { color: 'white', backgroundColor: 'green' },
+              '&:hover': { backgroundColor: 'yellow' },
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: 'inherit' }}>
+              <AttachMoneyIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Promotions" />
+          </ListItem>
+
           {/* Store Locator Link with Icon */}
           <ListItem
             button

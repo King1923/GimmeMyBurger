@@ -28,3 +28,26 @@ body {
   top: 0;
   object-fit: cover;
 }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden; /* Prevent horizontal scroll issues */
+}
+
+.promotion-banner-container {
+  width: 100vw;
+  max-width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center; /* Centers the image */
+  align-items: center;
+}
+
+.promotion-banner {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}

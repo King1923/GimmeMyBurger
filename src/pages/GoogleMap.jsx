@@ -1,3 +1,5 @@
+// GoogleMap.jsx
+
 import React from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
@@ -6,16 +8,22 @@ const containerStyle = {
   height: '400px',
 };
 
-const GoogleMapComponent = ({ markers = [], defaultCenter, currentLocation, onMarkerClick }) => {
+const GoogleMapComponent = ({
+  markers = [],
+  defaultCenter,
+  currentLocation,
+  onMarkerClick,
+}) => {
   return (
     <LoadScript googleMapsApiKey="AIzaSyBNxX3ljGhriIMNevt02quEXGO6fhIqhls">
       <GoogleMap mapContainerStyle={containerStyle} center={defaultCenter} zoom={10}>
-        {/* Render each marker from the API */}
+        {/* Render each marker from the API with a click handler */}
         {markers.map((marker) => (
           <Marker
             key={marker.id}
             position={{ lat: marker.latitude, lng: marker.longitude }}
             title={marker.name}
+            onClick={() => onMarkerClick(marker)}
           />
         ))}
 

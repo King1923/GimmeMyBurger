@@ -107,28 +107,7 @@ function AddInventory() {
                                 helperText={formik.touched.quantity && formik.errors.quantity}
                             />
                         </Grid>
-                        <Grid item xs={12} md={6}>
-                            <Box sx={{ textAlign: 'center', mt: 2 }}>
-                                <Button variant="contained" component="label">
-                                    Upload Image
-                                    <input
-                                        hidden
-                                        accept="image/*"
-                                        multiple
-                                        type="file"
-                                        onChange={onFileChange}
-                                    />
-                                </Button>
-                                {imageFile && (
-                                    <Box className="aspect-ratio-container" sx={{ mt: 2 }}>
-                                        <img
-                                            alt="inventory"
-                                            src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`}
-                                        />
-                                    </Box>
-                                )}
-                            </Box>
-                        </Grid>
+                        
                     </Grid>
                     <Box sx={{ mt: 2 }}>
                         <Button variant="contained" type="submit">

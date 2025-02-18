@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
 import GoogleMapComponent from './GoogleMap';
-import ClientNavbar from '../client/ClientNavbar';
-import ClientFooter from '../client/ClientFooter';
 import { useNavigate } from 'react-router-dom';
 import http from '../http';
 
@@ -46,10 +44,18 @@ function StoreLocator() {
     }
   }, []);
 
+  const handleMarkerClick = (marker) => {
+    // Navigate to the navigation page with destination and marker name in state
+    navigate('/navigation', {
+      state: {
+        destination: { lat: marker.latitude, lng: marker.longitude },
+        markerName: marker.name,
+      },
+    });
+  };
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      {/* Navbar */}
-
       {/* Main Content */}
       <Box sx={{ flexGrow: 1, padding: 3, textAlign: 'center' }}>
         <Typography variant="h4" sx={{ mb: 2 }}>
@@ -59,10 +65,39 @@ function StoreLocator() {
           markers={markers}
           defaultCenter={defaultCenter}
           currentLocation={currentLocation}
+          onMarkerClick={handleMarkerClick}
         />
+        {/* Legend */}
+        <Box sx={{ mt: 2, textAlign: 'center' }}>
+          <Typography variant="subtitle1">Legend:</Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 2,
+              mt: 1,
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <img
+                src="http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                alt="Your Location"
+                style={{ width: 20, height: 20 }}
+              />
+              <Typography variant="body2">Your Location</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <img
+                src="http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                alt="Store Location"
+                style={{ width: 20, height: 20 }}
+              />
+              <Typography variant="body2">Store Location</Typography>
+            </Box>
+          </Box>
+        </Box>
       </Box>
-
-      {/* Footer */}
     </Box>
   );
 }

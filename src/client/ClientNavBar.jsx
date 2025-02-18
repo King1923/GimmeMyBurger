@@ -54,13 +54,15 @@ const ClientNavbar = () => {
       <Container>
         <Toolbar disableGutters>
           {/* Logo */}
-          <Box sx={{ display: 'flex', alignItems: 'center', marginRight: 2 }}>
-            <img
-              src="src/assets/BURGER_LOGO-removebg-preview 3.png" // Replace with your logo path
-              alt="Logo"
-              style={{ height: '90px', marginRight: '10px' }}
-            />
-          </Box>
+          <Link to="/" style={{ textDecoration: 'none', color: 'orange', marginRight: '30px' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', marginRight: 2 }}>
+              <img
+                src="src/assets/BURGER_LOGO-removebg-preview 3.png" // Replace with your logo path
+                alt="Logo"
+                style={{ height: '90px', marginRight: '10px' }}
+              />
+            </Box>
+          </Link>
 
           {/* Navbar Links */}
           <Link to="/menu" style={{ textDecoration: 'none', color: 'orange', marginRight: '30px' }}>

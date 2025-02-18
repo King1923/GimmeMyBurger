@@ -44,6 +44,7 @@ import AllUsers from './pages/ManageUsers';
 import UserSettings from './pages/UserSettings';
 import AdminProfile from './pages/AdminProfile';
 import ManageAddresses from './pages/ManageAddresses';
+import NavigationPage from './pages/NavigationPage';
 
 // Helper component to wrap Routes and conditionally render Navbar and Footer.
 const AppRoutes = () => {
@@ -62,10 +63,12 @@ const AppRoutes = () => {
     "/addreward",
     "/form",
     "/adminstorelocator",
+    "/adminStoreLocator",
     "/inventory",
     "/addinventory",
     "/editinventory",
     "/editpromotion",
+    "/adminpromotions",
     "/adminPromotions",
     "/addpromotion",
     "/admincustomers",
@@ -106,6 +109,7 @@ const AppRoutes = () => {
 
           <Route path="/storelocator" element={<StoreLocator />} />
           <Route path="/adminstorelocator" element={<AdminStoreLocator/>}/>
+          <Route path="/navigation" element={<NavigationPage />} />
           <Route path="/addinventory" element={<AddInventory />} />
           <Route path="/editinventory/:id" element={<EditInventory/>}/>
           <Route path="/inventory" element={<Inventory />} />

@@ -64,21 +64,12 @@ function Inventory() {
     getInventory();
   };
 
-  // Handler to increment the quantity
-  const handleIncrement = (inventoryId) => {
-    setInventoryList((prevList) =>
-      prevList.map((item) =>
-        item.id === inventoryId ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
-  };
-
-  // Handler to decrement the quantity (not below 0)
-  const handleDecrement = (inventoryId) => {
+  // Handler to update quantity dynamically
+  const updateQuantity = (inventoryId, amount) => {
     setInventoryList((prevList) =>
       prevList.map((item) =>
         item.id === inventoryId
-          ? { ...item, quantity: Math.max(0, item.quantity - 1) }
+          ? { ...item, quantity: Math.max(0, item.quantity + amount) }
           : item
       )
     );
@@ -132,46 +123,71 @@ function Inventory() {
                         </IconButton>
                       </Link>
                     </Box>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        mb: 1,
-                      }}
-                      color="text.secondary"
-                    >
-                      <AccessTime sx={{ mr: 1 }} />
-                      <Typography>
-                        {dayjs(inventory.createdAt).format(
-                          global.datetimeFormat
-                        )}
-                      </Typography>
-                    </Box>
                     <Typography sx={{ whiteSpace: 'pre-wrap' }}>
                       {inventory.description}
                     </Typography>
+
+                    {/* Quantity Controls */}
                     <Box
                       sx={{
-                        mt: 1,
+                        mt: 2,
                         display: 'flex',
                         alignItems: 'center',
+                        flexWrap: 'wrap',
+                        gap: 1,
                       }}
                     >
-                      <Typography variant="body2" sx={{ mr: 1 }}>
-                        <strong>Quantity:</strong> {inventory.quantity}
+                      <Typography variant="body2" sx={{ mr: 1, fontWeight: 'bold' }}>
+                        Quantity: {inventory.quantity}
                       </Typography>
+
+                      {/* Increment & Decrement Buttons */}
                       <IconButton
-                        onClick={() => handleIncrement(inventory.id)}
+                        onClick={() => updateQuantity(inventory.id, 1)}
                         size="small"
                       >
                         <Add fontSize="small" />
                       </IconButton>
                       <IconButton
-                        onClick={() => handleDecrement(inventory.id)}
+                        onClick={() => updateQuantity(inventory.id, -1)}
                         size="small"
                       >
                         <Remove fontSize="small" />
                       </IconButton>
+
+                      {/* Buttons to change quantity by 50 */}
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => updateQuantity(inventory.id, 50)}
+                      >
+                        +50
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color="error"
+                        onClick={() => updateQuantity(inventory.id, -50)}
+                      >
+                        -50
+                      </Button>
+
+                      {/* Buttons to change quantity by 100 */}
+                      <Button
+                        variant="contained"
+                        size="small"
+                        onClick={() => updateQuantity(inventory.id, 100)}
+                      >
+                        +100
+                      </Button>
+                      <Button
+                        variant="contained"
+                        size="small"
+                        color="error"
+                        onClick={() => updateQuantity(inventory.id, -100)}
+                      >
+                        -100
+                      </Button>
                     </Box>
                   </CardContent>
                 </Card>
