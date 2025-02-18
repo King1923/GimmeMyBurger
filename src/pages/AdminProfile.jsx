@@ -14,6 +14,7 @@ import * as yup from 'yup';
 import http from '../http';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AdminSidebar from '../admin/AdminSideBar';
 
 const validationSchema = yup.object({
   FName: yup.string().trim()
@@ -27,8 +28,7 @@ const validationSchema = yup.object({
   Email: yup.string().email('Enter a valid email')
     .max(50, 'Maximum 50 characters')
     .required('Required'),
-  Mobile: yup.string()
-    .trim()
+  Mobile: yup.string().trim()
     .matches(/^[0-9]+$/, 'Mobile number must contain only digits')
     .length(8, 'Mobile number must be exactly 8 digits')
     .required('Required'),
@@ -39,14 +39,14 @@ const validationSchema = yup.object({
   PostalCode: yup.number().required('Required'),
 });
 
-function EditProfile() {
+const AdminProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   
   const [loading, setLoading] = useState(true);
   const [initialValues, setInitialValues] = useState(null);
 
-  // Fetch current user data on mount
+  // Fetch current admin data on mount
   useEffect(() => {
     http.get(`/user/${id}`)
       .then(response => {
@@ -81,13 +81,13 @@ function EditProfile() {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      // Update immediately without confirmation prompt
+      // Update profile via PUT /user/{id}
       http.put(`/user/${id}`, values)
         .then(response => {
           toast.success("Profile updated successfully.");
-          // Delay navigation slightly so the toast shows up
+          // Optionally navigate or refresh page
           setTimeout(() => {
-            navigate(`/editprofile/${id}`);
+            navigate(`/adminprofile/${id}`);
           }, 2000);
         })
         .catch(error => {
@@ -107,39 +107,19 @@ function EditProfile() {
   return (
     <Box sx={{ minHeight: '100vh', p: 4 }}>
       <Grid container spacing={4}>
-        {/* LEFT SIDEBAR */}
+        {/* Left Sidebar */}
         <Grid item xs={12} md={3}>
-          <Typography variant="h6" sx={{ mb: 3 }}>
-            ACCOUNT
-          </Typography>
-          <Box sx={{ ml: 2 }}>
-            <Typography sx={{ mb: 2, cursor: 'pointer' , fontWeight: 'bold' }} onClick={() => navigate(`/editprofile/${user.id}`)}>
-              Profile
-            </Typography>
-            <Typography sx={{ mb: 2, cursor: 'pointer' }} onClick={() => navigate('/manage-addresses')}>
-              Settings
-            </Typography>
-            <Typography sx={{ mb: 2, cursor: 'pointer' }} onClick={() => navigate('/manage-addresses')}>
-              Addresses
-            </Typography>
-            <Typography sx={{ mb: 2, cursor: 'pointer' }} onClick={() => navigate(`/change-password/${id}`)}>
-              Reset Password
-            </Typography>
-            <Typography sx={{ mb: 2, cursor: 'pointer' }} onClick={() => navigate('/delete-account')}>
-              Delete Account
-            </Typography>
-          </Box>
+          <AdminSidebar />
         </Grid>
 
-        {/* MAIN CONTENT AREA */}
+        {/* Main Content Area */}
         <Grid item xs={12} md={6}>
           <Typography variant="h4" sx={{ mb: 1 }}>
-            PROFILE
+            Admin Profile
           </Typography>
           <Box sx={{ p: 3 }}>
             <form onSubmit={formik.handleSubmit}>
               <Grid container spacing={2}>
-                {/* Each field: label above input */}
                 <Grid item xs={12}>
                   <Typography variant="subtitle2">First Name</Typography>
                   <TextField
@@ -254,9 +234,10 @@ function EditProfile() {
           </Box>
         </Grid>
       </Grid>
+      <Divider sx={{ my: 4 }} />
       <ToastContainer />
     </Box>
   );
-}
+};
 
-export default EditProfile;
+export default AdminProfile;

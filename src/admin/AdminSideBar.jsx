@@ -1,6 +1,15 @@
 import React, { useContext } from 'react';
-import { Box, Typography, Divider, List, ListItem, ListItemText, Avatar, ListItemIcon } from '@mui/material';
-import { Link, NavLink } from 'react-router-dom'; // Use NavLink for active styling
+import { 
+  Box, 
+  Typography, 
+  Divider, 
+  List, 
+  ListItem, 
+  ListItemText, 
+  Avatar, 
+  ListItemIcon 
+} from '@mui/material';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import UserContext from '../contexts/UserContext';
 import Drawer from '@mui/material/Drawer';
 
@@ -16,6 +25,7 @@ import StoreMallDirectoryIcon from '@mui/icons-material/StoreMallDirectory';
 
 const AdminSidebar = () => {
   const { user } = useContext(UserContext);
+  const navigate = useNavigate();
 
   // Helper function to convert role number to string
   const getRoleDisplay = (role) => {
@@ -29,6 +39,11 @@ const AdminSidebar = () => {
     localStorage.clear();
     window.location = '/';
   };
+
+  // Navigate to AdminProfile page when the avatar is clicked
+  const handleAvatarClick = () => {
+    navigate(`/adminprofile/${user.id}`);
+  };  
 
   return (
     <Drawer
@@ -50,16 +65,17 @@ const AdminSidebar = () => {
       <Box>
         {/* Top Section */}
         <Box sx={{ padding: 2, textAlign: 'center' }}>
-          {/* Replace default avatar with image */}
           <Avatar
-            src="src/assets/profile.webp"
+            src="/profile.webp"
             sx={{
               width: 60,
               height: 60,
               margin: '0 auto',
               mb: 1,
               border: '1px solid white',
+              cursor: 'pointer'
             }}
+            onClick={handleAvatarClick}
           />
           {user && (
             <Box sx={{ mt: 1 }}>
@@ -99,7 +115,7 @@ const AdminSidebar = () => {
           <ListItem
             button
             component={NavLink}
-            to="/customers"
+            to="/admincustomers"
             sx={{
               justifyContent: 'flex-start',
               textAlign: 'left',
@@ -244,27 +260,23 @@ const AdminSidebar = () => {
           </ListItem>
 
           {user ? (
-            <>
-              {/* Logout */}
-              <ListItem
-                button
-                onClick={logout}
-                sx={{
-                  justifyContent: 'flex-start',
-                  textAlign: 'left',
-                  pl: 2,
-                  fontWeight: 'bold',
-                  fontSize: '1.1rem',
-                  color: 'red',
-                  '&:hover': { backgroundColor: 'yellow' },
-                }}
-              >
-                <ListItemText primary="Logout" />
-              </ListItem>
-            </>
+            <ListItem
+              button
+              onClick={logout}
+              sx={{
+                justifyContent: 'flex-start',
+                textAlign: 'left',
+                pl: 2,
+                fontWeight: 'bold',
+                fontSize: '1.1rem',
+                color: 'red',
+                '&:hover': { backgroundColor: 'yellow' },
+              }}
+            >
+              <ListItemText primary="Logout" />
+            </ListItem>
           ) : (
             <>
-              {/* Register and Login Buttons */}
               <ListItem
                 button
                 component={Link}
@@ -302,10 +314,9 @@ const AdminSidebar = () => {
         </List>
       </Box>
 
-      {/* Bottom Section with Burger Logo */}
       <Box sx={{ padding: 2, textAlign: 'center' }}>
         <img
-          src="src/assets/BURGER_LOGO-removebg-preview 3.png" // Replace with your burger logo path
+          src="/BURGER_LOGO-removebg-preview 3.png"
           alt="Burger Logo"
           style={{ height: '60px' }}
         />

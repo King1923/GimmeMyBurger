@@ -32,9 +32,19 @@ function Login() {
       data.password = data.password.trim();
       http.post("/user/login", data)
         .then((res) => {
+          // Store authentication info and user details
           localStorage.setItem("accessToken", res.data.accessToken);
+          localStorage.setItem("userId", res.data.user.id);
+          // Optionally store the role if needed later
+          localStorage.setItem("role", res.data.user.role);
           setUser(res.data.user);
-          navigate("/rewards");
+
+          // Check role: 1 means Staff, 0 means Customer.
+          if (res.data.user.role === 1) {
+            navigate("/addreward");
+          } else {
+            navigate("/");
+          }
         })
         .catch((err) => {
           toast.error(`${err.response.data.message}`);
@@ -47,13 +57,15 @@ function Login() {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      minHeight: "100vh"
+      minHeight: "100vh",
+      backgroundColor: 'white',
+      color: 'black',
+      p: 2
     }}>
       <Typography variant="h5" sx={{ my: 3 }}>
-        Login
+        Welcome to GMB 
       </Typography>
-      <Box component="form" sx={{ maxWidth: '500px' }}
-        onSubmit={formik.handleSubmit}>
+      <Box component="form" sx={{ maxWidth: '500px' }} onSubmit={formik.handleSubmit}>
         <TextField
           fullWidth 
           margin="dense" 
@@ -65,6 +77,7 @@ function Login() {
           onBlur={formik.handleBlur}
           error={formik.touched.email && Boolean(formik.errors.email)}
           helperText={formik.touched.email && formik.errors.email}
+          sx={{ backgroundColor: '#fff', borderRadius: 1 }}
         />
         <TextField
           fullWidth 
@@ -78,6 +91,7 @@ function Login() {
           onBlur={formik.handleBlur}
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
+          sx={{ backgroundColor: '#fff', borderRadius: 1 }}
         />
         <Button 
           fullWidth 
@@ -95,14 +109,28 @@ function Login() {
           Login
         </Button>
       </Box>
-      {/* Forgot Password Link */}
-      <Typography
-        variant="body2"
-        onClick={() => navigate("/reset-password")}
-        sx={{ mt: 2, cursor: "pointer", textDecoration: "underline" }}
-      >
-        Forgot Password?
-      </Typography>
+      
+      {/* Sign Up & Forgot Password Section */}
+      <Box sx={{ mt: 1 }}>
+        <Typography variant="body2">
+          No account yet?{" "}
+          <span 
+            onClick={() => navigate("/register")}
+            style={{ textDecoration: "underline", cursor: "pointer" }}
+          >
+            Sign up here
+          </span>
+        </Typography>
+        <Box sx={{ textAlign: 'center', mt: 1 }}>
+          <Typography 
+            variant="body2" 
+            onClick={() => navigate("/reset-password")}
+            sx={{ textDecoration: "underline", cursor: "pointer" }}
+          >
+            Forgot Password?
+          </Typography>
+        </Box>
+      </Box>
       <ToastContainer />
     </Box>
   );

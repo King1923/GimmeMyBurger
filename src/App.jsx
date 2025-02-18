@@ -40,6 +40,10 @@ import ChangePassword from './pages/ChangePassword';
 import DeleteAccount from './pages/DeleteAccount';
 import ClientFooter from './client/ClientFooter'; // Import your ClientFooter
 import ClientNavbar from './client/ClientNavbar';
+import AllUsers from './pages/ManageUsers';
+import UserSettings from './pages/UserSettings';
+import AdminProfile from './pages/AdminProfile';
+import ManageAddresses from './pages/ManageAddresses';
 
 // Helper component to wrap Routes and conditionally render Navbar and Footer.
 const AppRoutes = () => {
@@ -63,7 +67,9 @@ const AppRoutes = () => {
     "/editinventory",
     "/editpromotion",
     "/adminPromotions",
-    "/addpromotion"
+    "/addpromotion",
+    "/admincustomers",
+    "/adminprofile"
   ];
 
   const hideHeaderAndFooter = adminPaths.some(path => location.pathname.startsWith(path));
@@ -97,15 +103,20 @@ const AppRoutes = () => {
           <Route path="/change-password/:id" element={<ChangePassword />} />
           <Route path="/delete-account" element={<DeleteAccount />} />
 
+
           <Route path="/storelocator" element={<StoreLocator />} />
-          <Route path="/adminstorelocator" element={<AdminStoreLocator />} />
+          <Route path="/adminstorelocator" element={<AdminStoreLocator/>}/>
           <Route path="/addinventory" element={<AddInventory />} />
-          <Route path="/editinventory/:id" element={<EditInventory />} />
+          <Route path="/editinventory/:id" element={<EditInventory/>}/>
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/editpromotion/:id" element={<EditPromotion />} />
-          <Route path="/adminPromotions" element={<AdminPromotions />} />
-          <Route path={"/addpromotion"} element={<AddPromotion />} />
-          <Route path='/promotions' element={<Promotions />} />
+          <Route path="/adminPromotions" element={<AdminPromotions/>}/>
+          <Route path={"/addpromotion"} element={<AddPromotion/>}/>
+          <Route path="/promotions" element={<Promotions/>}/>
+          <Route path="/admincustomers" element={<AllUsers/>}/>
+          <Route path="/settings" element={<UserSettings />} />
+          <Route path="/adminprofile/:id" element={<AdminProfile />} />
+          <Route path="/manage-addresses" element={<ManageAddresses />} />
         </Routes>
       </Container>
       {/* Render Footer if not on admin pages */}

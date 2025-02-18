@@ -35,17 +35,15 @@ const validationSchema = yup.object({
     .min(8, 'Password must be at least 8 characters')
     .max(50, 'Password must be at most 50 characters')
     .required('Password is required')
-    // Ensures at least one lowercase, one uppercase, one digit, and one special character.
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>\/?]).{8,}$/,
              'Password must include at least one uppercase letter, one lowercase letter, one number, and one special character')
-    // Custom test using zxcvbn to ensure password strength
     .test(
       'password-strength',
       'Password is too weak. Please choose a stronger password.',
       value => {
         if (!value) return false;
         const { score } = zxcvbn(value);
-        return score >= 3; // Only allow if score is 3 (Strong) or 4 (Very Strong)
+        return score >= 3;
       }
     ),
   confirmPassword: yup.string().trim()
@@ -55,13 +53,6 @@ const validationSchema = yup.object({
     .matches(/^[0-9]+$/, 'Mobile number must contain only digits')
     .length(8, 'Mobile number must be exactly 8 digits')
     .required('Mobile number is required'),
-  deliveryAddress: yup.string().trim()
-    .max(100, 'Delivery address must be at most 100 characters')
-    .required('Delivery address is required'),
-  postalCode: yup.string().trim()
-    .length(6, 'Postal code must be exactly 6 characters')
-    .matches(/^[0-9]+$/, 'Postal code must contain only digits')
-    .required('Postal code is required'),
   dob: yup.date()
     .required('Date of birth is required')
     .max(new Date(), 'Date of birth must be in the past')
@@ -78,8 +69,6 @@ function Register() {
       email: "",
       password: "",
       confirmPassword: "",
-      deliveryAddress: "",
-      postalCode: "",
       mobile: "",
       dob: ""
     },
@@ -90,8 +79,6 @@ function Register() {
       data.lname = data.lname.trim();
       data.email = data.email.trim().toLowerCase();
       data.password = data.password.trim();
-      data.deliveryAddress = data.deliveryAddress.trim();
-      data.postalCode = data.postalCode.trim();
       data.mobile = data.mobile.trim();
       data.dob = new Date(data.dob).toISOString();
       
@@ -118,10 +105,8 @@ function Register() {
     }
   };
 
-  // Map the score (0 to 4) to a percentage for the progress bar.
   const progressPercentage = (passwordScore / 4) * 100;
 
-  // Optionally, change the color based on the strength score.
   const getProgressColor = (score) => {
     if (score < 2) return 'error';
     if (score < 3) return 'warning';
@@ -181,7 +166,6 @@ function Register() {
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
         />
-        {/* Password Strength Meter */}
         {formik.values.password && (
           <Box sx={{ mt: 1, mb: 2 }}>
             <LinearProgress 
@@ -218,30 +202,6 @@ function Register() {
           onBlur={formik.handleBlur}
           error={formik.touched.mobile && Boolean(formik.errors.mobile)}
           helperText={formik.touched.mobile && formik.errors.mobile}
-        />
-        <TextField
-          fullWidth
-          margin="dense"
-          autoComplete="off"
-          label="Delivery Address"
-          name="deliveryAddress"
-          value={formik.values.deliveryAddress}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.deliveryAddress && Boolean(formik.errors.deliveryAddress)}
-          helperText={formik.touched.deliveryAddress && formik.errors.deliveryAddress}
-        />
-        <TextField
-          fullWidth
-          margin="dense"
-          autoComplete="off"
-          label="Postal Code"
-          name="postalCode"
-          value={formik.values.postalCode}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.postalCode && Boolean(formik.errors.postalCode)}
-          helperText={formik.touched.postalCode && formik.errors.postalCode}
         />
         <TextField
           fullWidth
