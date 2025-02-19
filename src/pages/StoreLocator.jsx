@@ -58,7 +58,7 @@ function StoreLocator() {
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       {/* Main Content */}
       <Box sx={{ flexGrow: 1, padding: 3, textAlign: 'center' }}>
-        <Typography variant="h4" sx={{ mb: 2 }}>
+        <Typography variant="h4" sx={{ mb: 2, fontWeight: 'bold' }}>
           Locate Us
         </Typography>
         <GoogleMapComponent

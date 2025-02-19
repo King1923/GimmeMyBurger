@@ -64,15 +64,35 @@ function Inventory() {
     getInventory();
   };
 
-  // Handler to update quantity dynamically
+  // Handler to update quantity and persist changes to the database
   const updateQuantity = (inventoryId, amount) => {
-    setInventoryList((prevList) =>
-      prevList.map((item) =>
-        item.id === inventoryId
-          ? { ...item, quantity: Math.max(0, item.quantity + amount) }
-          : item
-      )
-    );
+    // Find the item in local state
+    const itemToUpdate = inventoryList.find((item) => item.id === inventoryId);
+    if (!itemToUpdate) return;
+
+    // Calculate the new quantity (not allowing negative values)
+    const newQuantity = Math.max(0, itemToUpdate.quantity + amount);
+
+    // Create the updated payload. (Include the current item name as required by your API)
+    const updatedInventory = {
+      Item: itemToUpdate.item,
+      Quantity: newQuantity,
+    };
+
+    // Send a PUT request to update the inventory in the database
+    http.put(`/inventory/${inventoryId}`, updatedInventory)
+      .then((res) => {
+        // On success, update the local state with the new quantity
+        setInventoryList((prevList) =>
+          prevList.map((item) =>
+            item.id === inventoryId ? { ...item, quantity: newQuantity } : item
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error updating inventory:", error);
+        // Optionally, you can notify the user or revert local changes here
+      });
   };
 
   return (
@@ -142,16 +162,10 @@ function Inventory() {
                       </Typography>
 
                       {/* Increment & Decrement Buttons */}
-                      <IconButton
-                        onClick={() => updateQuantity(inventory.id, 1)}
-                        size="small"
-                      >
+                      <IconButton onClick={() => updateQuantity(inventory.id, 1)} size="small">
                         <Add fontSize="small" />
                       </IconButton>
-                      <IconButton
-                        onClick={() => updateQuantity(inventory.id, -1)}
-                        size="small"
-                      >
+                      <IconButton onClick={() => updateQuantity(inventory.id, -1)} size="small">
                         <Remove fontSize="small" />
                       </IconButton>
 

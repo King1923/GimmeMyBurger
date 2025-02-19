@@ -16,8 +16,8 @@ function NavigationPage() {
   }
 
   return (
-    <Box sx={{ padding: 3 }}>
-      <Typography variant="h4" sx={{ mb: 2 }}>
+    <Box sx={{ padding: 3, textAlign: 'center' }}>
+      <Typography variant="h4" sx={{ mb: 2, fontWeight: 'bold' }}>
         Directions to {markerName}
       </Typography>
       <NavigationMap destination={destination} />
