@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import zxcvbn from 'zxcvbn';
 
@@ -232,6 +232,17 @@ function Register() {
         >
           Register
         </Button>
+      </Box>
+      <Box sx={{ mt: 2, textAlign: 'center' }}>
+        <Typography variant="body2">
+          Already have an account?{" "}
+          <span 
+            onClick={() => navigate("/login")}
+            style={{ textDecoration: "underline", cursor: "pointer" }}
+          >
+            Sign in here
+          </span>
+        </Typography>
       </Box>
       <ToastContainer />
     </Box>

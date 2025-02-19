@@ -163,12 +163,6 @@ const ManageAddresses = () => {
               Profile
             </Typography>
             <Typography 
-              sx={{ mb: 2, cursor: 'pointer' }}
-              onClick={() => navigate('/settings')}
-            >
-              Settings
-            </Typography>
-            <Typography 
               sx={{ mb: 2, cursor: 'pointer', fontWeight: 'bold' }}
               onClick={() => navigate('/manage-addresses')}
             >

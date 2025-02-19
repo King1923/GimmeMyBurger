@@ -122,13 +122,10 @@ const ClientNavbar = () => {
                   sx: { backgroundColor: '#000', color: 'orange' }
                 }}
               >
-                <MenuItem onClick={() => { navigate('/orders'); handleMenuClose(); }}>
-                  Orders
-                </MenuItem>
                 <MenuItem onClick={() => { navigate(`/editprofile/${user.id}`); handleMenuClose(); }}>
                   Profile
                 </MenuItem>
-                <MenuItem onClick={() => { navigate('/addresses'); handleMenuClose(); }}>
+                <MenuItem onClick={() => { navigate('/manage-addresses'); handleMenuClose(); }}>
                   Addresses
                 </MenuItem>
                 <MenuItem onClick={() => { logout(); handleMenuClose(); }}>

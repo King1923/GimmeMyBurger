@@ -32,14 +32,10 @@ const validationSchema = yup.object({
     .matches(/^[0-9]+$/, 'Mobile number must contain only digits')
     .length(8, 'Mobile number must be exactly 8 digits')
     .required('Required'),
-  DeliveryAddress: yup.string().trim()
-    .max(150, 'Maximum 150 characters')
-    .required('Required'),
-  DoB: yup.date().required('Required'),
-  PostalCode: yup.number().required('Required'),
+  DoB: yup.date().required('Required')
 });
 
-const AdminProfile = () => {
+function AdminProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
   
@@ -56,9 +52,7 @@ const AdminProfile = () => {
           LName: user.lName,
           Email: user.email,
           Mobile: user.mobile,
-          DeliveryAddress: user.deliveryAddress,
           DoB: new Date(user.doB).toISOString().split('T')[0],
-          PostalCode: user.postalCode,
         });
         setLoading(false);
       })
@@ -75,19 +69,17 @@ const AdminProfile = () => {
       LName: '',
       Email: '',
       Mobile: '',
-      DeliveryAddress: '',
       DoB: '',
-      PostalCode: '',
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      // Update profile via PUT /user/{id}
+      // Update immediately without confirmation prompt
       http.put(`/user/${id}`, values)
         .then(response => {
           toast.success("Profile updated successfully.");
-          // Optionally navigate or refresh page
+          // Delay navigation slightly so the toast shows up
           setTimeout(() => {
-            navigate(`/adminprofile/${id}`);
+            navigate(`/editprofile/${id}`);
           }, 2000);
         })
         .catch(error => {
@@ -173,19 +165,6 @@ const AdminProfile = () => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography variant="subtitle2">Delivery Address</Typography>
-                  <TextField
-                    fullWidth
-                    name="DeliveryAddress"
-                    value={formik.values.DeliveryAddress}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.DeliveryAddress && Boolean(formik.errors.DeliveryAddress)}
-                    helperText={formik.touched.DeliveryAddress && formik.errors.DeliveryAddress}
-                    sx={{ backgroundColor: '#fff', borderRadius: 1 }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
                   <Typography variant="subtitle2">Date of Birth</Typography>
                   <TextField
                     fullWidth
@@ -197,20 +176,6 @@ const AdminProfile = () => {
                     error={formik.touched.DoB && Boolean(formik.errors.DoB)}
                     helperText={formik.touched.DoB && formik.errors.DoB}
                     InputLabelProps={{ shrink: true }}
-                    sx={{ backgroundColor: '#fff', borderRadius: 1 }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="subtitle2">Postal Code</Typography>
-                  <TextField
-                    fullWidth
-                    name="PostalCode"
-                    type="number"
-                    value={formik.values.PostalCode}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.PostalCode && Boolean(formik.errors.PostalCode)}
-                    helperText={formik.touched.PostalCode && formik.errors.PostalCode}
                     sx={{ backgroundColor: '#fff', borderRadius: 1 }}
                   />
                 </Grid>
@@ -238,6 +203,6 @@ const AdminProfile = () => {
       <ToastContainer />
     </Box>
   );
-};
+}
 
 export default AdminProfile;

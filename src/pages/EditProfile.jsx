@@ -5,8 +5,7 @@ import {
   Grid,
   CircularProgress,
   TextField,
-  Button,
-  Divider
+  Button
 } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
@@ -32,11 +31,7 @@ const validationSchema = yup.object({
     .matches(/^[0-9]+$/, 'Mobile number must contain only digits')
     .length(8, 'Mobile number must be exactly 8 digits')
     .required('Required'),
-  DeliveryAddress: yup.string().trim()
-    .max(150, 'Maximum 150 characters')
-    .required('Required'),
   DoB: yup.date().required('Required'),
-  PostalCode: yup.number().required('Required'),
 });
 
 function EditProfile() {
@@ -56,9 +51,7 @@ function EditProfile() {
           LName: user.lName,
           Email: user.email,
           Mobile: user.mobile,
-          DeliveryAddress: user.deliveryAddress,
           DoB: new Date(user.doB).toISOString().split('T')[0],
-          PostalCode: user.postalCode,
         });
         setLoading(false);
       })
@@ -75,17 +68,14 @@ function EditProfile() {
       LName: '',
       Email: '',
       Mobile: '',
-      DeliveryAddress: '',
       DoB: '',
-      PostalCode: '',
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      // Update immediately without confirmation prompt
       http.put(`/user/${id}`, values)
         .then(response => {
           toast.success("Profile updated successfully.");
-          // Delay navigation slightly so the toast shows up
+          // Delay navigation slightly so the toast shows up.
           setTimeout(() => {
             navigate(`/editprofile/${id}`);
           }, 2000);
@@ -113,19 +103,28 @@ function EditProfile() {
             ACCOUNT
           </Typography>
           <Box sx={{ ml: 2 }}>
-            <Typography sx={{ mb: 2, cursor: 'pointer' , fontWeight: 'bold' }} onClick={() => navigate(`/editprofile/${user.id}`)}>
+            <Typography 
+              sx={{ mb: 2, cursor: 'pointer', fontWeight: 'bold' }}
+              onClick={() => navigate(`/editprofile/${id}`)}
+            >
               Profile
             </Typography>
-            <Typography sx={{ mb: 2, cursor: 'pointer' }} onClick={() => navigate('/manage-addresses')}>
-              Settings
-            </Typography>
-            <Typography sx={{ mb: 2, cursor: 'pointer' }} onClick={() => navigate('/manage-addresses')}>
+            <Typography 
+              sx={{ mb: 2, cursor: 'pointer' }}
+              onClick={() => navigate('/manage-addresses')}
+            >
               Addresses
             </Typography>
-            <Typography sx={{ mb: 2, cursor: 'pointer' }} onClick={() => navigate(`/change-password/${id}`)}>
+            <Typography 
+              sx={{ mb: 2, cursor: 'pointer' }}
+              onClick={() => navigate(`/change-password/${id}`)}
+            >
               Reset Password
             </Typography>
-            <Typography sx={{ mb: 2, cursor: 'pointer' }} onClick={() => navigate('/delete-account')}>
+            <Typography 
+              sx={{ mb: 2, cursor: 'pointer' }}
+              onClick={() => navigate('/delete-account')}
+            >
               Delete Account
             </Typography>
           </Box>
@@ -139,7 +138,6 @@ function EditProfile() {
           <Box sx={{ p: 3 }}>
             <form onSubmit={formik.handleSubmit}>
               <Grid container spacing={2}>
-                {/* Each field: label above input */}
                 <Grid item xs={12}>
                   <Typography variant="subtitle2">First Name</Typography>
                   <TextField
@@ -193,19 +191,6 @@ function EditProfile() {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography variant="subtitle2">Delivery Address</Typography>
-                  <TextField
-                    fullWidth
-                    name="DeliveryAddress"
-                    value={formik.values.DeliveryAddress}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.DeliveryAddress && Boolean(formik.errors.DeliveryAddress)}
-                    helperText={formik.touched.DeliveryAddress && formik.errors.DeliveryAddress}
-                    sx={{ backgroundColor: '#fff', borderRadius: 1 }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
                   <Typography variant="subtitle2">Date of Birth</Typography>
                   <TextField
                     fullWidth
@@ -217,20 +202,6 @@ function EditProfile() {
                     error={formik.touched.DoB && Boolean(formik.errors.DoB)}
                     helperText={formik.touched.DoB && formik.errors.DoB}
                     InputLabelProps={{ shrink: true }}
-                    sx={{ backgroundColor: '#fff', borderRadius: 1 }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="subtitle2">Postal Code</Typography>
-                  <TextField
-                    fullWidth
-                    name="PostalCode"
-                    type="number"
-                    value={formik.values.PostalCode}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.PostalCode && Boolean(formik.errors.PostalCode)}
-                    helperText={formik.touched.PostalCode && formik.errors.PostalCode}
                     sx={{ backgroundColor: '#fff', borderRadius: 1 }}
                   />
                 </Grid>

@@ -23,6 +23,7 @@ import Inventory2Icon from '@mui/icons-material/Inventory2';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import StoreMallDirectoryIcon from '@mui/icons-material/StoreMallDirectory';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const AdminSidebar = () => {
   const { user } = useContext(UserContext);
@@ -44,7 +45,7 @@ const AdminSidebar = () => {
   // Navigate to AdminProfile page when the avatar is clicked
   const handleAvatarClick = () => {
     navigate(`/adminprofile/${user.id}`);
-  };  
+  };
 
   return (
     <Drawer
@@ -52,6 +53,7 @@ const AdminSidebar = () => {
       sx={{
         width: 240,
         flexShrink: 0,
+        // Drawer paper styling
         [`& .MuiDrawer-paper`]: {
           width: 240,
           boxSizing: 'border-box',
@@ -66,18 +68,24 @@ const AdminSidebar = () => {
       <Box>
         {/* Top Section */}
         <Box sx={{ padding: 2, textAlign: 'center' }}>
+          {/* Updated Avatar: now shows "ADMIN" in white */}
           <Avatar
-            src="/profile.webp"
             sx={{
               width: 60,
               height: 60,
               margin: '0 auto',
               mb: 1,
               border: '1px solid white',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              bgcolor: 'transparent',
+              color: 'white',
+              fontSize: '1rem',
+              fontWeight: 'bold'
             }}
             onClick={handleAvatarClick}
-          />
+          >
+            ADMIN
+          </Avatar>
           {user && (
             <Box sx={{ mt: 1 }}>
               <Typography variant="body1" sx={{ color: 'white' }}>
@@ -90,24 +98,43 @@ const AdminSidebar = () => {
           )}
         </Box>
         <Divider />
-        <List>
+        <List sx={{ width: '100%' }}>
+          {/* Admin Profile Link with Icon (moved to the top of the list) */}
+          <ListItem
+            button
+            component={NavLink}
+            to={`/adminprofile/${user.id}`}
+            sx={{
+              width: '100%',
+              pl: 2,
+              fontWeight: 'bold',
+              fontSize: '1.1rem',
+              color: '#FFA500',
+              '&.active': { color: 'white', backgroundColor: 'green' },
+              '&:hover': { backgroundColor: 'yellow' },
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: '#FFA500' }}>
+              <AccountCircleIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Profile" />
+          </ListItem>
           {/* Dashboard Link with Icon */}
           <ListItem
             button
             component={NavLink}
             to="/dashboard"
             sx={{
-              justifyContent: 'flex-start',
-              textAlign: 'left',
+              width: '100%',
               pl: 2,
               fontWeight: 'bold',
               fontSize: '1.1rem',
-              color: 'inherit',
+              color: '#FFA500',
               '&.active': { color: 'white', backgroundColor: 'green' },
               '&:hover': { backgroundColor: 'yellow' },
             }}
           >
-            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: 'inherit' }}>
+            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: '#FFA500' }}>
               <DashboardIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText primary="Dashboard" />
@@ -118,17 +145,16 @@ const AdminSidebar = () => {
             component={NavLink}
             to="/admincustomers"
             sx={{
-              justifyContent: 'flex-start',
-              textAlign: 'left',
+              width: '100%',
               pl: 2,
               fontWeight: 'bold',
               fontSize: '1.1rem',
-              color: 'inherit',
+              color: '#FFA500',
               '&.active': { color: 'white', backgroundColor: 'green' },
               '&:hover': { backgroundColor: 'yellow' },
             }}
           >
-            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: 'inherit' }}>
+            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: '#FFA500' }}>
               <PeopleIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText primary="Customers" />
@@ -139,17 +165,16 @@ const AdminSidebar = () => {
             component={NavLink}
             to="/products"
             sx={{
-              justifyContent: 'flex-start',
-              textAlign: 'left',
+              width: '100%',
               pl: 2,
               fontWeight: 'bold',
               fontSize: '1.1rem',
-              color: 'inherit',
+              color: '#FFA500',
               '&.active': { color: 'white', backgroundColor: 'green' },
               '&:hover': { backgroundColor: 'yellow' },
             }}
           >
-            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: 'inherit' }}>
+            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: '#FFA500' }}>
               <StorefrontIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText primary="Products" />
@@ -160,17 +185,16 @@ const AdminSidebar = () => {
             component={NavLink}
             to="/form"
             sx={{
-              justifyContent: 'flex-start',
-              textAlign: 'left',
+              width: '100%',
               pl: 2,
               fontWeight: 'bold',
               fontSize: '1.1rem',
-              color: 'inherit',
+              color: '#FFA500',
               '&.active': { color: 'white', backgroundColor: 'green' },
               '&:hover': { backgroundColor: 'yellow' },
             }}
           >
-            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: 'inherit' }}>
+            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: '#FFA500' }}>
               <DescriptionIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText primary="Form" />
@@ -181,17 +205,16 @@ const AdminSidebar = () => {
             component={NavLink}
             to="/categories"
             sx={{
-              justifyContent: 'flex-start',
-              textAlign: 'left',
+              width: '100%',
               pl: 2,
               fontWeight: 'bold',
               fontSize: '1.1rem',
-              color: 'inherit',
+              color: '#FFA500',
               '&.active': { color: 'white', backgroundColor: 'green' },
               '&:hover': { backgroundColor: 'yellow' },
             }}
           >
-            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: 'inherit' }}>
+            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: '#FFA500' }}>
               <CategoryIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText primary="Categories" />
@@ -202,17 +225,16 @@ const AdminSidebar = () => {
             component={NavLink}
             to="/inventory"
             sx={{
-              justifyContent: 'flex-start',
-              textAlign: 'left',
+              width: '100%',
               pl: 2,
               fontWeight: 'bold',
               fontSize: '1.1rem',
-              color: 'inherit',
+              color: '#FFA500',
               '&.active': { color: 'white', backgroundColor: 'green' },
               '&:hover': { backgroundColor: 'yellow' },
             }}
           >
-            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: 'inherit' }}>
+            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: '#FFA500' }}>
               <Inventory2Icon fontSize="small" />
             </ListItemIcon>
             <ListItemText primary="Inventory" />
@@ -223,60 +245,56 @@ const AdminSidebar = () => {
             component={NavLink}
             to="/orders"
             sx={{
-              justifyContent: 'flex-start',
-              textAlign: 'left',
+              width: '100%',
               pl: 2,
               fontWeight: 'bold',
               fontSize: '1.1rem',
-              color: 'inherit',
+              color: '#FFA500',
               '&.active': { color: 'white', backgroundColor: 'green' },
               '&:hover': { backgroundColor: 'yellow' },
             }}
           >
-            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: 'inherit' }}>
+            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: '#FFA500' }}>
               <ReceiptLongIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText primary="Orders" />
           </ListItem>
-
+          {/* Promotions Link with Icon */}
           <ListItem
             button
             component={NavLink}
             to="/adminpromotions"
             sx={{
-              justifyContent: 'flex-start',
-              textAlign: 'left',
+              width: '100%',
               pl: 2,
               fontWeight: 'bold',
               fontSize: '1.1rem',
-              color: 'inherit',
+              color: '#FFA500',
               '&.active': { color: 'white', backgroundColor: 'green' },
               '&:hover': { backgroundColor: 'yellow' },
             }}
           >
-            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: 'inherit' }}>
+            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: '#FFA500' }}>
               <AttachMoneyIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText primary="Promotions" />
           </ListItem>
-
           {/* Store Locator Link with Icon */}
           <ListItem
             button
             component={NavLink}
             to="/adminstorelocator"
             sx={{
-              justifyContent: 'flex-start',
-              textAlign: 'left',
+              width: '100%',
               pl: 2,
               fontWeight: 'bold',
               fontSize: '1.1rem',
-              color: 'inherit',
+              color: '#FFA500',
               '&.active': { color: 'white', backgroundColor: 'green' },
               '&:hover': { backgroundColor: 'yellow' },
             }}
           >
-            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: 'inherit' }}>
+            <ListItemIcon sx={{ minWidth: 'auto', mr: 1, color: '#FFA500' }}>
               <StoreMallDirectoryIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText primary="Store Locator" />
@@ -287,8 +305,7 @@ const AdminSidebar = () => {
               button
               onClick={logout}
               sx={{
-                justifyContent: 'flex-start',
-                textAlign: 'left',
+                width: '100%',
                 pl: 2,
                 fontWeight: 'bold',
                 fontSize: '1.1rem',
@@ -305,12 +322,11 @@ const AdminSidebar = () => {
                 component={Link}
                 to="/register"
                 sx={{
-                  justifyContent: 'flex-start',
-                  textAlign: 'left',
+                  width: '100%',
                   pl: 2,
                   fontWeight: 'bold',
                   fontSize: '1.1rem',
-                  color: 'white',
+                  color: '#FFA500',
                   '&:hover': { backgroundColor: 'yellow' },
                 }}
               >
@@ -321,12 +337,11 @@ const AdminSidebar = () => {
                 component={Link}
                 to="/login"
                 sx={{
-                  justifyContent: 'flex-start',
-                  textAlign: 'left',
+                  width: '100%',
                   pl: 2,
                   fontWeight: 'bold',
                   fontSize: '1.1rem',
-                  color: 'white',
+                  color: '#FFA500',
                   '&:hover': { backgroundColor: 'yellow' },
                 }}
               >

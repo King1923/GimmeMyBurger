@@ -1,7 +1,7 @@
 import './App.css';
 import { useState, useEffect } from 'react';
 import { Container } from '@mui/material';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import MyTheme from './themes/MyTheme';
 import Promotions from './pages/User_Home';
@@ -17,7 +17,7 @@ import UserMenu from './pages/User_Menu';
 import UserCart from './pages/User_Cart';
 import http from './http';
 import UserContext from './contexts/UserContext';
-import MenuProduct from './pages/User_MenuProduct'; // For displaying product details
+import MenuProduct from './pages/User_MenuProduct';
 import AddPromotion from './pages/Admin_AddPromotion';
 import EditPromotion from './pages/Admin_EditPromotion';
 import AdminPromotions from './pages/Admin_Promotions';
@@ -26,32 +26,31 @@ import EditInventory from './pages/Admin_EditInventory';
 import AddInventory from './pages/Admin_AddInventory';
 import StoreLocator from './pages/StoreLocator';
 import AdminStoreLocator from './pages/AdminStoreLocator';
-
-
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Rewards from './pages/Rewards';
 import AddReward from './pages/AddReward';
 import EditReward from './pages/EditReward';
 import ProfileInfo from './pages/ProfileInfo';
-import EditProfile from './pages/EditProfile'; // EditProfile page
+import EditProfile from './pages/EditProfile';
 import ResetPassword from './pages/ResetPassword';
 import ChangePassword from './pages/ChangePassword';
 import DeleteAccount from './pages/DeleteAccount';
-import ClientFooter from './client/ClientFooter'; // Import your ClientFooter
+import ClientFooter from './client/ClientFooter';
 import ClientNavbar from './client/ClientNavbar';
 import AllUsers from './pages/ManageUsers';
 import UserSettings from './pages/UserSettings';
 import AdminProfile from './pages/AdminProfile';
 import ManageAddresses from './pages/ManageAddresses';
 import NavigationPage from './pages/NavigationPage';
+import Dashboard from './pages/Dashboard';
+import ProtectedRoute from './contexts/ProtectedRoute ';
 
-// Helper component to wrap Routes and conditionally render Navbar and Footer.
+// Helper component to conditionally render Navbar and Footer.
 const AppRoutes = () => {
   const location = useLocation();
 
   // Define the admin paths where you don't want to show the Navbar and Footer.
-  // Adjust these as needed.
   const adminPaths = [
     "/products",
     "/addproduct",
@@ -72,32 +71,68 @@ const AppRoutes = () => {
     "/adminPromotions",
     "/addpromotion",
     "/admincustomers",
-    "/adminprofile"
+    "/adminprofile",
+    "/dashboard"
   ];
 
   const hideHeaderAndFooter = adminPaths.some(path => location.pathname.startsWith(path));
 
   return (
     <>
-      {/* Render Navbar if not on admin pages */}
       {!hideHeaderAndFooter && <ClientNavbar />}
       <Container sx={{ minHeight: '100vh' }}>
         <Routes>
           <Route path="/" element={<Promotions />} />
           <Route path="/menu" element={<UserMenu />} />
           <Route path="/cart" element={<UserCart />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/addproduct" element={<AddProduct />} />
-          <Route path="/editproduct/:id" element={<EditProduct />} />
-          <Route path="/categories" element={<Categories />} />
-          <Route path="/addcategory" element={<AddCategory />} />
-          <Route path="/editcategory/:id" element={<EditCategory />} />
-          <Route path="/product/:productId" element={<MenuProduct />} /> {/* Product details */}
-          <Route path="/order" element={<Orders />} />
+          <Route path="/products" element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <Products />
+            </ProtectedRoute>
+          } />
+          <Route path="/addproduct" element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <AddProduct />
+            </ProtectedRoute>
+          } />
+          <Route path="/editproduct/:id" element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <EditProduct />
+            </ProtectedRoute>
+          } />
+          <Route path="/categories" element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <Categories />
+            </ProtectedRoute>
+          } />
+          <Route path="/addcategory" element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <AddCategory />
+            </ProtectedRoute>
+          } />
+          <Route path="/editcategory/:id" element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <EditCategory />
+            </ProtectedRoute>
+          } />
+          <Route path="/product/:productId" element={<MenuProduct />} />
+          <Route path="/order" element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <Orders />
+            </ProtectedRoute>
+          } />
           <Route path="/form" element={<MyForm />} />
           <Route path="/rewards" element={<Rewards />} />
-          <Route path="/addreward" element={<AddReward />} />
-          <Route path="/editreward/:id" element={<EditReward />} />
+          <Route path="/addreward" element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <AddReward />
+            </ProtectedRoute>
+          } />
+          <Route path="/editreward/:id" element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <EditReward />
+            </ProtectedRoute>
+          } />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile/:id" element={<ProfileInfo />} />
@@ -105,25 +140,59 @@ const AppRoutes = () => {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/change-password/:id" element={<ChangePassword />} />
           <Route path="/delete-account" element={<DeleteAccount />} />
-
-
           <Route path="/storelocator" element={<StoreLocator />} />
-          <Route path="/adminstorelocator" element={<AdminStoreLocator/>}/>
+          <Route path="/adminstorelocator" element={<AdminStoreLocator />} />
           <Route path="/navigation" element={<NavigationPage />} />
-          <Route path="/addinventory" element={<AddInventory />} />
-          <Route path="/editinventory/:id" element={<EditInventory/>}/>
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/editpromotion/:id" element={<EditPromotion />} />
-          <Route path="/adminPromotions" element={<AdminPromotions/>}/>
-          <Route path={"/addpromotion"} element={<AddPromotion/>}/>
-          <Route path="/promotions" element={<Promotions/>}/>
-          <Route path="/admincustomers" element={<AllUsers/>}/>
+          <Route path="/addinventory" element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <AddInventory />
+            </ProtectedRoute>
+          } />
+          <Route path="/editinventory/:id" element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <EditInventory />
+            </ProtectedRoute>
+          } />
+          <Route path="/inventory" element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <Inventory />
+            </ProtectedRoute>
+          } />
+          <Route path="/editpromotion/:id" element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <EditPromotion />
+            </ProtectedRoute>
+          } />
+          <Route path="/adminPromotions" element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <AdminPromotions />
+            </ProtectedRoute>
+          } />
+          <Route path="/addpromotion" element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <AddPromotion />
+            </ProtectedRoute>
+          } />
+          <Route path="/promotions" element={<Promotions />} />
+          <Route path="/admincustomers" element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <AllUsers />
+            </ProtectedRoute>
+          } />
           <Route path="/settings" element={<UserSettings />} />
-          <Route path="/adminprofile/:id" element={<AdminProfile />} />
+          <Route path="/adminprofile/:id" element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <AdminProfile />
+            </ProtectedRoute>
+          } />
           <Route path="/manage-addresses" element={<ManageAddresses />} />
+          <Route path="/dashboard" element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
         </Routes>
       </Container>
-      {/* Render Footer if not on admin pages */}
       {!hideHeaderAndFooter && <ClientFooter />}
     </>
   );

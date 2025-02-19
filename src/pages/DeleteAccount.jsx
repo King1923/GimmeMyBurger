@@ -44,9 +44,6 @@ function DeleteAccount() {
             <Typography sx={{ mb: 2, cursor: 'pointer' }} onClick={() => navigate(`/editprofile/${user.id}`)}>
               Profile
             </Typography>
-            <Typography sx={{ mb: 2, cursor: 'pointer' }} onClick={() => navigate('/settings')}>
-              Settings
-            </Typography>
             <Typography sx={{ mb: 2, cursor: 'pointer' }} onClick={() => navigate('/manage-addresses')}>
               Addresses
             </Typography>
